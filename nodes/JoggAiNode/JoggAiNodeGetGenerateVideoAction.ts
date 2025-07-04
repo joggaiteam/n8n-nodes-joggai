@@ -5,6 +5,8 @@ import {
 	executeGetGeneratedVideoOperation,
 } from './GetGeneratedVideoOperation/GetGeneratedVideo';
 
+import { GET_GENERATED_VIDEO_RESOURCE } from '../../const/joggAiNode';
+
 export const getGenerateVideoActionProperties: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -13,18 +15,18 @@ export const getGenerateVideoActionProperties: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['getGeneratedVideoAction'],
+				resource: [GET_GENERATED_VIDEO_RESOURCE.value],
 			},
 		},
 		options: [
 			{
-				name: 'Get Generated Video',
-				value: 'getGeneratedVideo',
-				description: 'Get information about a specific project using its ID',
-				action: 'Get Generated Video',
+				name: GET_GENERATED_VIDEO_RESOURCE.operation.GET_GENERATED_VIDEO.name,
+				value: GET_GENERATED_VIDEO_RESOURCE.operation.GET_GENERATED_VIDEO.value,
+				description: GET_GENERATED_VIDEO_RESOURCE.operation.GET_GENERATED_VIDEO.description,
+				action: GET_GENERATED_VIDEO_RESOURCE.operation.GET_GENERATED_VIDEO.name,
 			},
 		],
-		default: 'getGeneratedVideo',
+		default: GET_GENERATED_VIDEO_RESOURCE.operation.GET_GENERATED_VIDEO.value,
 		required: true,
 	},
 	...getGeneratedVideoProperties,
@@ -36,7 +38,7 @@ export async function executeGetGenerateVideoActionOperation(
 ): Promise<INodeExecutionData[]> {
 	const operation = this.getNodeParameter('operation', i) as string;
 	switch (operation) {
-		case 'getGeneratedVideo':
+		case GET_GENERATED_VIDEO_RESOURCE.operation.GET_GENERATED_VIDEO.value:
 			return await executeGetGeneratedVideoOperation.call(this, i);
 		default:
 			return [];

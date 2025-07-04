@@ -5,6 +5,8 @@ import {
 	executeCreateTalkingAvatarOperation,
 } from './TalkingAvatarOperation/CreateTalkingAvatar';
 
+import { TALKING_AVATAR_RESOURCE } from '../../const/joggAiNode';
+
 export const talkingAvatarProperties: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -13,15 +15,15 @@ export const talkingAvatarProperties: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['talkingAvatar'],
+				resource: [TALKING_AVATAR_RESOURCE.value],
 			},
 		},
 		options: [
 			{
-				name: 'Create Talking Avatar Videos',
-				value: 'createTalkingAvatar',
-				description: 'Creates a talking avatar video with specified parameters',
-				action: 'Create Talking Avatar Videos',
+				name: TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.name,
+				value: TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value,
+				description: TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.description,
+				action: TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.name,
 			},
 		],
 		default: 'createTalkingAvatar',
@@ -36,7 +38,7 @@ export async function executeTalkingAvatarOperation(
 ): Promise<INodeExecutionData[]> {
 	const operation = this.getNodeParameter('operation', i) as string;
 	switch (operation) {
-		case 'createTalkingAvatar':
+		case TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value:
 			return await executeCreateTalkingAvatarOperation.call(this, i);
 		default:
 			return [];

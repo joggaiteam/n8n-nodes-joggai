@@ -3,10 +3,17 @@ import {
 	IExecuteFunctions,
 	IHttpRequestOptions,
 	INodeExecutionData,
+	IDataObject,
 } from 'n8n-workflow';
 
 import { languageOptions } from '../../../const/language';
 import { scriptStyleOptions } from '../../../const/scriptStyle';
+
+import { URL_TO_VIDEO_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+import { productVideoTemplateTypeOptions } from '../../../const/templateType';
+import { avatarTypeOptions } from '../../../const/avatarType';
+import { productVideoAspectRatioOptions } from '../../../const/aspectRatio';
+import { videoLengthOptions } from '../../../const/videoLength';
 
 export const generateVideoFromProductInformationProperties: INodeProperties[] = [
 	{
@@ -14,25 +21,41 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'productId',
 		type: 'string',
 		default: '',
-		description: 'The ID of the product to generate video',
+		description: 'Product ID obtained from Step 1 (POST /product) response data.product_id',
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
 	{
-		displayName: 'Video Name',
-		name: 'videoName',
-		type: 'string',
-		default: '',
-		description: 'The name of the generated video',
+		displayName: 'Aspect Ratio',
+		name: 'aspectRatio',
+		type: 'options',
+		options: productVideoAspectRatioOptions,
+		default: 0,
+		required: true,
+		description: 'Video aspect ratio',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
+			},
+		},
+	},
+	{
+		displayName: 'Video Length',
+		name: 'videoLength',
+		type: 'options',
+		options: videoLengthOptions,
+		default: '15',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -46,92 +69,8 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		options: languageOptions,
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
-			},
-		},
-	},
-	{
-		displayName: 'Script Style',
-		name: 'scriptStyle',
-		type: 'options',
-		default: 'Soft Selling',
-		description: 'Script writing style for video content',
-		required: true,
-		options: scriptStyleOptions,
-		displayOptions: {
-			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
-			},
-		},
-	},
-	{
-		displayName: 'Visual Style',
-		name: 'visualStyle',
-		type: 'string',
-		default: '',
-		description: 'Visual style for the video',
-		displayOptions: {
-			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
-			},
-		},
-	},
-	{
-		displayName: 'Video Length',
-		name: 'videoLength',
-		type: 'options',
-		options: [
-			{
-				name: '15',
-				value: '15',
-			},
-			{
-				name: '30',
-				value: '30',
-			},
-			{
-				name: '60',
-				value: '60',
-			},
-		],
-		default: '15',
-		required: true,
-		description: 'The length of the video in seconds',
-		displayOptions: {
-			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
-			},
-		},
-	},
-	{
-		displayName: 'Aspect Ratio',
-		name: 'aspectRatio',
-		type: 'options',
-		options: [
-			{
-				name: '[9:16]',
-				value: 0,
-			},
-			{
-				name: '[16:9]',
-				value: 1,
-			},
-			{
-				name: '[1:1]',
-				value: 2,
-			},
-		],
-		default: 0,
-		required: true,
-		description: 'The aspect ratio of the video',
-		displayOptions: {
-			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -141,11 +80,11 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		type: 'number',
 		default: 0,
 		required: true,
-		description: 'The ID of the avatar to use in the video',
+		description: 'Avatar id from Jogg Avatar or Your Avatar',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -155,60 +94,27 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		required: true,
 		default: 0,
 		type: 'options',
-		options: [
-			{
-				name: 'Public Avatars',
-				value: 0,
-			},
-			{
-				name: 'Custom Avatars',
-				value: 1,
-			},
-		],
-		description: 'The type of the avatar',
+		options: avatarTypeOptions,
+		description: 'Avatar source type',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
 	{
-		displayName: 'Voice ID',
-		name: 'voiceId',
-		type: 'string',
-		default: '',
-		description: 'The ID of the voice to use in the video',
+		displayName: 'Script Style',
+		name: 'scriptStyle',
+		type: 'options',
+		default: "Don't Worry",
+		description: 'Script writing style for video content',
+		required: true,
+		options: scriptStyleOptions,
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
-			},
-		},
-	},
-	{
-		displayName: 'Music ID',
-		name: 'musicId',
-		type: 'number',
-		default: 0,
-		description: 'The ID of the background music to use in the video',
-		displayOptions: {
-			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
-			},
-		},
-	},
-	{
-		displayName: 'Template ID',
-		name: 'templateId',
-		type: 'number',
-		default: 0,
-		description: 'The ID of the template to use for the video',
-		displayOptions: {
-			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -217,48 +123,106 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'templateType',
 		default: 'public',
 		type: 'options',
-		options: [
-			{
-				name: 'Template From Template Library',
-				value: 'public',
-			},
-			{
-				name: 'Template From My Templates',
-				value: 'custom',
-			},
-		],
+		options: productVideoTemplateTypeOptions,
 		required: true,
-		description: 'The type of the template',
+		description: 'Template source type',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
+	{
+		displayName: 'Voice ID',
+		name: 'voiceId',
+		type: 'string',
+		default: '',
+		description: 'Voice id from voice list',
+		displayOptions: {
+			show: {
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
+			},
+		},
+	},
+	{
+		displayName: 'Music ID',
+		name: 'musicId',
+		type: 'number',
+		default: 0,
+		description: 'Music id from music list',
+		displayOptions: {
+			show: {
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
+			},
+		},
+	},
+	{
+		displayName: 'Visual Style',
+		name: 'visualStyle',
+		type: 'string',
+		default: '',
+		description: 'Visual style of the video from visual list(GET /visual)',
+		displayOptions: {
+			show: {
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
+			},
+		},
+	},
+	{
+		displayName: 'Template ID',
+		name: 'templateId',
+		type: 'number',
+		default: 0,
+		description: 'Template ID from template library or custom template',
+		displayOptions: {
+			show: {
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
+			},
+		},
+	},
+
 	{
 		displayName: 'Override Script',
 		name: 'overrideScript',
 		type: 'string',
 		default: '',
-		description: 'Custom script to override the generated one',
+		description: 'You can enter the script you want to use here to override the existing script',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
 	{
-		displayName: 'Add Captions',
+		displayName: 'Captions',
 		name: 'caption',
 		type: 'boolean',
-		default: true,
-		description: 'Whether to add captions to the video',
+		default: false,
+		description: 'Controls subtitle rendering',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['generateVideoFromProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
+			},
+		},
+	},
+	{
+		displayName: 'Video Name',
+		name: 'videoName',
+		type: 'string',
+		default: '',
+		description:
+			'If you want to specify the name of the generated video, please use this parameter',
+		displayOptions: {
+			show: {
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -300,12 +264,11 @@ export async function executeGenerateVideoFromProductOperation(
 		template_id: templateId,
 		template_type: templateType,
 		caption,
+		video_name: videoName,
+		override_script: overrideScript,
 	};
 
-	if (videoName) body.video_name = videoName;
-	if (overrideScript) body.override_script = overrideScript;
-
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',
@@ -330,8 +293,4 @@ export async function executeGenerateVideoFromProductOperation(
 	returnData.push(...executionData);
 
 	return returnData;
-}
-
-interface IDataObject {
-	[key: string]: unknown;
 }

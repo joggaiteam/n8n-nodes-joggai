@@ -5,6 +5,10 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
+import { ASSETS_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
+import { motionModelOptions } from '../../../const/model';
+
 export const addMotionProperties: INodeProperties[] = [
 	{
 		displayName: 'Image URL',
@@ -13,8 +17,8 @@ export const addMotionProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['addMotion'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.ADD_MOTION.value],
 			},
 		},
 		required: true,
@@ -23,29 +27,12 @@ export const addMotionProperties: INodeProperties[] = [
 		displayName: 'Model',
 		name: 'modelVersion',
 		type: 'options',
-		options: [
-			{
-				name: '1.0',
-				value: '1.0',
-			},
-			{
-				name: '2.0',
-				value: '2.0',
-			},
-			{
-				name: '2.0-Pro',
-				value: '2.0-Pro',
-			},
-			{
-				name: '3.0',
-				value: '3.0',
-			},
-		],
+		options: motionModelOptions,
 		default: '1.0',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['addMotion'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.ADD_MOTION.value],
 			},
 		},
 		required: true,
@@ -57,8 +44,8 @@ export const addMotionProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['addMotion'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.ADD_MOTION.value],
 			},
 		},
 		required: true,
@@ -70,8 +57,8 @@ export const addMotionProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['addMotion'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.ADD_MOTION.value],
 			},
 		},
 		required: true,
@@ -85,8 +72,8 @@ export const addMotionProperties: INodeProperties[] = [
 			'For Model 1.0, descriptions must be under 300 bytes, and for other models, they must not exceed 1500 bytes',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['addMotion'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.ADD_MOTION.value],
 			},
 		},
 	},
@@ -97,8 +84,8 @@ export const addMotionProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['addMotion'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.ADD_MOTION.value],
 			},
 		},
 	},
@@ -111,8 +98,8 @@ export const addMotionProperties: INodeProperties[] = [
 			'If you want to change the default greeting message of the avatar, you can use this parameter to replace it',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['addMotion'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.ADD_MOTION.value],
 			},
 		},
 	},
@@ -132,7 +119,7 @@ export async function executeAddMotionOperation(
 	const voiceId = this.getNodeParameter('voiceId', i) as string;
 	const modelVersion = this.getNodeParameter('modelVersion', i) as string;
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const body = {
 		description,

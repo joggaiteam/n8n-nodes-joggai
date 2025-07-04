@@ -3,7 +3,12 @@ import {
 	IExecuteFunctions,
 	IHttpRequestOptions,
 	INodeExecutionData,
+	IDataObject,
 } from 'n8n-workflow';
+
+import { URL_TO_VIDEO_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
+import { mediaTypeOptions } from '../../../const/mediaType';
 
 export const updateProductInformationProperties: INodeProperties[] = [
 	{
@@ -11,12 +16,12 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		name: 'productId',
 		type: 'string',
 		default: '',
-		description: 'The ID of the product to update',
+		description: 'Product ID obtained from Step 1 (POST /open/product) response data.id',
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['updateProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -25,11 +30,11 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		name: 'name',
 		type: 'string',
 		default: '',
-		description: 'The name of the product',
+		description: 'Product name',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['updateProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -38,11 +43,11 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		name: 'description',
 		type: 'string',
 		default: '',
-		description: 'The description of the product',
+		description: 'Product introduction and selling points',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['updateProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -51,11 +56,11 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		name: 'targetAudience',
 		type: 'string',
 		default: '',
-		description: 'The target audience for the product',
+		description: 'Target audience for the product',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['updateProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.value],
 			},
 		},
 	},
@@ -68,10 +73,11 @@ export const updateProductInformationProperties: INodeProperties[] = [
 			multipleValues: true,
 		},
 		default: {},
+		description: 'Media resources array (will replace existing media if provided)',
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
-				operation: ['updateProductInformation'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
+				operation: [URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.value],
 			},
 		},
 		options: [
@@ -84,38 +90,29 @@ export const updateProductInformationProperties: INodeProperties[] = [
 						name: 'type',
 						type: 'options',
 						default: 1,
-						description: 'The type of media',
-						options: [
-							{
-								name: 'Image',
-								value: 1,
-							},
-							{
-								name: 'Video',
-								value: 2,
-							},
-						],
+						description: 'Media type',
+						options: mediaTypeOptions,
 					},
 					{
 						displayName: 'Name',
 						name: 'name',
 						type: 'string',
 						default: '',
-						description: 'The name of the media file',
+						description: 'Media name',
 					},
 					{
 						displayName: 'URL',
 						name: 'url',
 						type: 'string',
 						default: '',
-						description: 'The URL of the media file',
+						description: 'Media URL',
 					},
 					{
 						displayName: 'Description',
 						name: 'description',
 						type: 'string',
 						default: '',
-						description: 'The description of the media file',
+						description: 'Media description',
 					},
 				],
 			},
@@ -146,14 +143,13 @@ export async function executeUpdateProductInformationOperation(
 
 	const body: IDataObject = {
 		product_id: productId,
+		name,
+		description,
+		target_audience: targetAudience,
+		media,
 	};
 
-	if (name) body.name = name;
-	if (description) body.description = description;
-	if (targetAudience) body.target_audience = targetAudience;
-	if (media.length > 0) body.media = media;
-
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'PUT',
@@ -178,8 +174,4 @@ export async function executeUpdateProductInformationOperation(
 	returnData.push(...executionData);
 
 	return returnData;
-}
-
-interface IDataObject {
-	[key: string]: unknown;
 }

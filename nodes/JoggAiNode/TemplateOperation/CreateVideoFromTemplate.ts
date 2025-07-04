@@ -3,19 +3,25 @@ import {
 	IHttpRequestOptions,
 	INodeExecutionData,
 	INodeProperties,
+	IDataObject,
 } from 'n8n-workflow';
+
+import { TEMPLATE_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
+import { templateTypeOptions } from '../../../const/templateType';
+import { avatarTypeOptions } from '../../../const/avatarType';
+import { contentTypeOptions } from '../../../const/contentType';
 
 export const createVideoFromTemplateProperties: INodeProperties[] = [
 	{
 		displayName: 'Template ID',
 		name: 'templateId',
 		type: 'number',
-		default: 1234,
-		description: 'The ID of the template to use',
+		default: 0,
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
 		required: true,
@@ -24,12 +30,12 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 		displayName: 'Language',
 		name: 'language',
 		type: 'string',
-		default: 'english',
-		description: 'The language to use for the video',
+		default: '',
+		description: 'Language for text-to-speech conversion',
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
 		required: true,
@@ -39,73 +45,53 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 		name: 'templateType',
 		type: 'options',
 		default: 'common',
-		description: 'The type of template to use',
+		description: 'Template source type',
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
-		options: [
-			{
-				name: 'Template From Template Library',
-				value: 'common',
-			},
-			{
-				name: 'Template From User Templates',
-				value: 'user',
-			},
-		],
+		options: templateTypeOptions,
 		required: true,
 	},
 	{
 		displayName: 'Avatar ID',
 		name: 'avatarId',
 		type: 'number',
-		default: 1,
-		description: 'The ID of the avatar to use',
+		default: 0,
+		description: 'Digital person ID',
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
-		required: true,
 	},
 	{
 		displayName: 'Avatar Type',
 		name: 'avatarType',
 		type: 'options',
 		default: 0,
-		description: 'The type of avatar to use',
+		description: 'Avatar source type',
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
-		options: [
-			{
-				name: 'Public Avatars',
-				value: 0,
-			},
-			{
-				name: 'Custom Avatars',
-				value: 1,
-			},
-		],
-		required: true,
+		options: avatarTypeOptions,
 	},
 	{
 		displayName: 'Voice ID',
 		name: 'voiceId',
 		type: 'string',
-		default: 'en-US-ChristopherNeural',
+		default: '',
 		description: 'Voice ID for text-to-speech',
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
 	},
@@ -113,12 +99,12 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 		displayName: 'Caption',
 		name: 'caption',
 		type: 'boolean',
-		default: true,
-		description: 'Whether to include captions in the video',
+		default: false,
+		description: 'Whether to enable captions',
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
 	},
@@ -126,12 +112,12 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 		displayName: 'Music ID',
 		name: 'musicId',
 		type: 'number',
-		default: 1,
-		description: 'The ID of the music to use',
+		default: 0,
+		description: 'Background music ID',
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
 	},
@@ -144,10 +130,11 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 			multipleValues: true,
 		},
 		default: [],
+		required: true,
 		displayOptions: {
 			show: {
-				resource: ['template'],
-				operation: ['createVideoFromTemplate'],
+				resource: [TEMPLATE_RESOURCE.value],
+				operation: [TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value],
 			},
 		},
 		options: [
@@ -159,24 +146,7 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 						displayName: 'Type',
 						name: 'type',
 						type: 'options',
-						options: [
-							{
-								name: 'Text Content',
-								value: 'text',
-							},
-							{
-								name: 'Image Content',
-								value: 'image',
-							},
-							{
-								name: 'Video Content',
-								value: 'video',
-							},
-							{
-								name: 'Script Content',
-								value: 'script',
-							},
-						],
+						options: contentTypeOptions,
 						required: true,
 						default: 'text',
 						description: 'The type of variable',
@@ -192,30 +162,41 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 					{
 						displayName: 'Properties',
 						name: 'properties',
-						type: 'collection',
+						type: 'fixedCollection',
+						typeOptions: {
+							multipleValues: false,
+						},
 						required: true,
-						default: {},
+						default: {
+							values: {},
+						},
 						options: [
 							{
-								displayName: 'Content',
-								name: 'content',
-								type: 'string',
-								default: '',
-								description: 'The text content for the variable',
-							},
-							{
-								displayName: 'URL',
-								name: 'url',
-								type: 'string',
-								default: '',
-								description: 'The URL for the variable',
-							},
-							{
-								displayName: 'Asset ID',
-								name: 'assetId',
-								type: 'number',
-								default: 0,
-								description: 'The asset ID for the variable',
+								name: 'values',
+								displayName: 'Properties Values',
+								values: [
+									{
+										displayName: 'Content',
+										name: 'content',
+										type: 'string',
+										default: '',
+										description: 'The text content for the variable',
+									},
+									{
+										displayName: 'URL',
+										name: 'url',
+										type: 'string',
+										default: '',
+										description: 'The URL for the variable',
+									},
+									{
+										displayName: 'Asset ID',
+										name: 'assetId',
+										type: 'number',
+										default: 0,
+										description: 'The asset ID for the variable',
+									},
+								],
 							},
 						],
 					},
@@ -231,7 +212,6 @@ export async function executeCreateVideoFromTemplateOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	// 获取所有必要参数
 	const templateId = this.getNodeParameter('templateId', i) as number;
 	const language = this.getNodeParameter('language', i) as string;
 	const templateType = this.getNodeParameter('templateType', i) as string;
@@ -241,26 +221,13 @@ export async function executeCreateVideoFromTemplateOperation(
 	const caption = this.getNodeParameter('caption', i) as boolean;
 	const musicId = this.getNodeParameter('musicId', i) as number;
 
-	// 获取变量数据
 	const variablesCollection = this.getNodeParameter(
 		'variables.variableValues',
 		i,
 		[],
 	) as IDataObject[];
-	const variables = variablesCollection.map((variable: IDataObject) => {
-		const properties = (variable.properties as IDataObject) || {};
-		return {
-			type: variable.type as string,
-			name: variable.name as string,
-			properties: {
-				content: (properties.content as string) || '',
-				url: (properties.url as string) || '',
-				asset_id: (properties.assetId as number) || 0,
-			},
-		};
-	});
+	const variables = parseVariables(variablesCollection);
 
-	// 构建请求体
 	const body = {
 		template_id: templateId,
 		lang: language,
@@ -273,8 +240,7 @@ export async function executeCreateVideoFromTemplateOperation(
 		variables,
 	};
 
-	// 获取凭证
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',
@@ -289,10 +255,8 @@ export async function executeCreateVideoFromTemplateOperation(
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	// 发送请求并获取响应
 	const responseData = await this.helpers.httpRequest(options);
 
-	// 处理响应数据
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),
 		{ itemData: { item: i } },
@@ -303,6 +267,20 @@ export async function executeCreateVideoFromTemplateOperation(
 	return returnData;
 }
 
-interface IDataObject {
-	[key: string]: unknown;
+function parseVariables(variablesCollection: IDataObject[]) {
+	return variablesCollection.map((variable: IDataObject) => {
+		const properties = variable.properties as IDataObject;
+		const propertiesValues =
+			properties && properties.values ? (properties.values as IDataObject) : {};
+
+		return {
+			type: variable.type as string,
+			name: variable.name as string,
+			properties: {
+				content: (propertiesValues.content as string) || '',
+				url: (propertiesValues.url as string) || '',
+				asset_id: (propertiesValues.assetId as number) || 0,
+			},
+		};
+	});
 }

@@ -6,6 +6,9 @@ import {
 } from 'n8n-workflow';
 
 import { languageOptions } from '../../../const/language';
+import { videoLengthOptions } from '../../../const/videoLength';
+
+import { ASSETS_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
 
 export const aiScriptProperties: INodeProperties[] = [
 	{
@@ -17,8 +20,8 @@ export const aiScriptProperties: INodeProperties[] = [
 		options: languageOptions,
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['createScript'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.AI_SCRIPTS.value],
 			},
 		},
 		required: true,
@@ -32,8 +35,8 @@ export const aiScriptProperties: INodeProperties[] = [
 			'Simply provide the product information or the product_id generated at the "Upload URL to Create Product" endpoint, and you can create several different styles of product introduction scripts',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['createScript'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.AI_SCRIPTS.value],
 			},
 		},
 	},
@@ -45,8 +48,8 @@ export const aiScriptProperties: INodeProperties[] = [
 		description: 'Product name',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['createScript'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.AI_SCRIPTS.value],
 			},
 		},
 	},
@@ -58,8 +61,8 @@ export const aiScriptProperties: INodeProperties[] = [
 		description: 'Product introduction and selling points',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['createScript'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.AI_SCRIPTS.value],
 			},
 		},
 	},
@@ -71,8 +74,8 @@ export const aiScriptProperties: INodeProperties[] = [
 		description: 'Target audience for the product',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['createScript'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.AI_SCRIPTS.value],
 			},
 		},
 	},
@@ -81,24 +84,11 @@ export const aiScriptProperties: INodeProperties[] = [
 		name: 'videoLength',
 		type: 'options',
 		default: '15',
-		options: [
-			{
-				name: '15',
-				value: '15',
-			},
-			{
-				name: '30',
-				value: '30',
-			},
-			{
-				name: '60',
-				value: '60',
-			},
-		],
+		options: videoLengthOptions,
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['createScript'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.AI_SCRIPTS.value],
 			},
 		},
 	},
@@ -126,7 +116,7 @@ export async function executeAiScriptOperation(
 		video_length: videoLength,
 	};
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',

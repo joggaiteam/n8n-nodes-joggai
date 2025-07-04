@@ -3,7 +3,15 @@ import {
 	IExecuteFunctions,
 	IHttpRequestOptions,
 	INodeExecutionData,
+	IDataObject,
 } from 'n8n-workflow';
+
+import { LOOKUP_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
+import { notSelectOption } from '../../../const/notSelect';
+import { languageOptions } from '../../../const/language';
+import { ageOptions } from '../../../const/age';
+import { genderOptions } from '../../../const/gender';
 
 export const voiceListProperties: INodeProperties[] = [
 	{
@@ -14,8 +22,8 @@ export const voiceListProperties: INodeProperties[] = [
 		default: 'voices',
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['voice:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_VOICE.value],
 			},
 		},
 		options: [
@@ -42,8 +50,8 @@ export const voiceListProperties: INodeProperties[] = [
 		description: 'Page number',
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['voice:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_VOICE.value],
 				source: ['voices'],
 			},
 		},
@@ -58,8 +66,8 @@ export const voiceListProperties: INodeProperties[] = [
 		default: 10,
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['voice:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_VOICE.value],
 				source: ['voices'],
 			},
 		},
@@ -69,30 +77,13 @@ export const voiceListProperties: INodeProperties[] = [
 		displayName: 'Age',
 		name: 'age',
 		type: 'options',
-		options: [
-			{
-				name: 'No Select',
-				value: '',
-			},
-			{
-				name: 'Young',
-				value: 'young',
-			},
-			{
-				name: 'Middle Aged',
-				value: 'middle_aged',
-			},
-			{
-				name: 'Old',
-				value: 'old',
-			},
-		],
+		options: [notSelectOption, ...ageOptions],
 		default: '',
 		description: 'Filter voices by age',
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['voice:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_VOICE.value],
 				source: ['voices'],
 			},
 		},
@@ -101,26 +92,13 @@ export const voiceListProperties: INodeProperties[] = [
 		displayName: 'Gender',
 		name: 'gender',
 		type: 'options',
-		options: [
-			{
-				name: 'No Select',
-				value: '',
-			},
-			{
-				name: 'Male',
-				value: 'male',
-			},
-			{
-				name: 'Female',
-				value: 'female',
-			},
-		],
+		options: [notSelectOption, ...genderOptions],
 		default: '',
 		description: 'Filter voices by gender',
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['voice:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_VOICE.value],
 				source: ['voices'],
 			},
 		},
@@ -129,30 +107,13 @@ export const voiceListProperties: INodeProperties[] = [
 		displayName: 'Language',
 		name: 'language',
 		type: 'options',
-		options: [
-			{
-				name: 'No Select',
-				value: '',
-			},
-			{
-				name: 'English',
-				value: 'english',
-			},
-			{
-				name: 'Filipino',
-				value: 'filipino',
-			},
-			{
-				name: 'French',
-				value: 'french',
-			},
-		],
+		options: [notSelectOption, ...languageOptions],
 		default: '',
 		description: 'Filter voices by language',
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['voice:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_VOICE.value],
 				source: ['voices', 'voices/custom'],
 			},
 		},
@@ -169,36 +130,26 @@ export async function executeVoiceListOperation(
 
 	let endpoint = `/v1/${source}`;
 
+	const qs: IDataObject = {};
+
+	const language = this.getNodeParameter('language', i) as string;
+	qs.language = language;
+
 	if (source === 'voices') {
 		const page = this.getNodeParameter('page', i) as number;
+		qs.page = page;
+
 		const pageSize = this.getNodeParameter('pageSize', i) as number;
+		qs.page_size = pageSize;
+
 		const age = this.getNodeParameter('age', i) as string;
+		qs.age = age;
+
 		const gender = this.getNodeParameter('gender', i) as string;
-		const language = this.getNodeParameter('language', i) as string;
-
-		// 构建查询参数
-		const queryParams = [];
-		queryParams.push(`page=${page}`);
-		queryParams.push(`page_size=${pageSize}`);
-
-		if (age) {
-			queryParams.push(`age=${age}`);
-		}
-
-		if (gender) {
-			queryParams.push(`gender=${gender}`);
-		}
-
-		if (language) {
-			queryParams.push(`language=${language}`);
-		}
-
-		if (queryParams.length > 0) {
-			endpoint += `?${queryParams.join('&')}`;
-		}
+		qs.gender = gender;
 	}
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',
@@ -208,13 +159,13 @@ export async function executeVoiceListOperation(
 			'Content-Type': 'application/json',
 		},
 		json: true,
+		qs: qs,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
 	const responseData = await this.helpers.httpRequest(options);
 
-	// 直接返回整个响应数据
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),
 		{ itemData: { item: i } },

@@ -5,6 +5,8 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
+import { ASSETS_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
 export const uploadMediaProperties: INodeProperties[] = [
 	{
 		displayName: 'Filename',
@@ -14,8 +16,8 @@ export const uploadMediaProperties: INodeProperties[] = [
 		description: 'Data required for file upload',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['uploadFile'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.UPLOAD_MEDIA.value],
 			},
 		},
 		required: true,
@@ -27,8 +29,8 @@ export const uploadMediaProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['uploadFile'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.UPLOAD_MEDIA.value],
 			},
 		},
 		required: true,
@@ -46,15 +48,15 @@ export async function executeUploadMediaOperation(
 
 	const items = this.getInputData();
 	if (!items[i].binary) {
-		throw new Error('没有二进制数据输入!');
+		throw new Error('no binary data input');
 	}
 
 	const binaryPropertyName = fileData;
 	if (!items[i].binary[binaryPropertyName]) {
-		throw new Error(`找不到指定的二进制属性: ${binaryPropertyName}`);
+		throw new Error(`cannot find the binary property: ${binaryPropertyName}`);
 	}
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const body = {
 		filename: filename,

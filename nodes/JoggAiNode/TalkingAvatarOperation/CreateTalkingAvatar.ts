@@ -3,87 +3,27 @@ import {
 	IHttpRequestOptions,
 	INodeExecutionData,
 	INodeProperties,
+	IDataObject,
 } from 'n8n-workflow';
 
+import { TALKING_AVATAR_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
+import { screenStyleOptions } from '../../../const/screenStyle';
+import { talkingAvatarTypeOptions } from '../../../const/avatarType';
+import { talkingAvatarAspectRatioOptions } from '../../../const/aspectRatio';
+
 export const createTalkingAvatarProperties: INodeProperties[] = [
-	{
-		displayName: 'Script',
-		name: 'script',
-		type: 'string',
-		default: '',
-		description:
-			'Script content for the avatar to speak. Must provide either script or audio_script',
-		displayOptions: {
-			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
-			},
-		},
-	},
-	{
-		displayName: 'Audio URL',
-		name: 'audioUrl',
-		type: 'string',
-		default: '',
-		description: 'Url for Audio, either script or audio_url must be provided, but not both',
-		displayOptions: {
-			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
-			},
-		},
-	},
-	{
-		displayName: 'Aspect Ratio',
-		name: 'aspectRatio',
-		type: 'options',
-		options: [
-			{
-				name: '[9:16]',
-				value: 0,
-			},
-			{
-				name: '[16:9]',
-				value: 1,
-			},
-			{
-				name: '[1:1]',
-				value: 2,
-			},
-		],
-		default: 0,
-		description: 'Aspect ratio of the output video',
-		displayOptions: {
-			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
-			},
-		},
-	},
 	{
 		displayName: 'Screen Style',
 		name: 'screenStyle',
 		type: 'options',
 		default: 1,
-		options: [
-			{
-				name: 'With Background',
-				value: 1,
-			},
-			{
-				name: 'Green Screen',
-				value: 2,
-			},
-			{
-				name: 'WebM',
-				value: 3,
-			},
-		],
+		options: screenStyleOptions,
 		description: 'Background style',
 		displayOptions: {
 			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
 			},
 		},
 		required: true,
@@ -96,8 +36,8 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 		description: 'ID of the avatar to use',
 		displayOptions: {
 			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
 			},
 		},
 		required: true,
@@ -108,20 +48,11 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 		type: 'options',
 		default: 0,
 		description: 'Source type of the avatar',
-		options: [
-			{
-				name: 'Jogg Avatar',
-				value: 0,
-			},
-			{
-				name: 'Your Avatar',
-				value: 1,
-			},
-		],
+		options: talkingAvatarTypeOptions,
 		displayOptions: {
 			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
 			},
 		},
 		required: true,
@@ -130,26 +61,67 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 		displayName: 'Voice ID',
 		name: 'voiceId',
 		type: 'string',
-		default: undefined,
+		default: '',
 		description: 'ID of the text-to-speech voice to use',
 		displayOptions: {
 			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
 			},
 		},
 		required: true,
 	},
 	{
+		displayName: 'Script',
+		name: 'script',
+		type: 'string',
+		default: '',
+		description:
+			'Script content for the avatar to speak. Must provide either script or audio_script',
+		displayOptions: {
+			show: {
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
+			},
+		},
+	},
+	{
+		displayName: 'Audio URL',
+		name: 'audioUrl',
+		type: 'string',
+		default: '',
+		description: 'Url for Audio, either script or audio_url must be provided, but not both',
+		displayOptions: {
+			show: {
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
+			},
+		},
+	},
+	{
+		displayName: 'Aspect Ratio',
+		name: 'aspectRatio',
+		type: 'options',
+		options: talkingAvatarAspectRatioOptions,
+		default: 0,
+		description: 'Aspect ratio of the output video',
+		displayOptions: {
+			show: {
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
+			},
+		},
+	},
+	{
 		displayName: 'Caption',
 		name: 'caption',
 		type: 'boolean',
-		default: true,
-		description: 'Subtitle option. true: enable subtitles, false: disable subtitles',
+		default: false,
+		description: 'Subtitle option',
 		displayOptions: {
 			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
 			},
 		},
 	},
@@ -157,13 +129,13 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 		displayName: 'Video Name',
 		name: 'videoName',
 		type: 'string',
-		default: undefined,
+		default: '',
 		description:
 			'If you want to specify the name of the generated video, please use this parameter',
 		displayOptions: {
 			show: {
-				resource: ['talkingAvatar'],
-				operation: ['createTalkingAvatar'],
+				resource: [TALKING_AVATAR_RESOURCE.value],
+				operation: [TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value],
 			},
 		},
 	},
@@ -185,30 +157,19 @@ export async function executeCreateTalkingAvatarOperation(
 	const caption = this.getNodeParameter('caption', i) as boolean;
 	const videoName = this.getNodeParameter('videoName', i, 'My Video') as string;
 
-	const body: IDataObject = {};
+	const body: IDataObject = {
+		avatar_id: avatarId,
+		avatar_type: avatarType,
+		voice_id: voiceId,
+		screen_style: screenStyle,
+		script: script,
+		audio_url: audioUrl,
+		aspect_ratio: aspectRatio,
+		caption: caption,
+		video_name: videoName,
+	};
 
-	body.avatar_id = avatarId;
-	body.avatar_type = avatarType;
-	body.voice_id = voiceId;
-	body.screen_style = screenStyle;
-
-	if (script !== undefined) {
-		body.script = script;
-	}
-	if (audioUrl !== undefined) {
-		body.audio_url = audioUrl;
-	}
-	if (aspectRatio !== undefined) {
-		body.aspect_ratio = aspectRatio;
-	}
-	if (caption !== undefined) {
-		body.caption = caption;
-	}
-	if (videoName !== undefined) {
-		body.video_name = videoName;
-	}
-
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',
@@ -233,8 +194,4 @@ export async function executeCreateTalkingAvatarOperation(
 	returnData.push(...executionData);
 
 	return returnData;
-}
-
-interface IDataObject {
-	[key: string]: unknown;
 }

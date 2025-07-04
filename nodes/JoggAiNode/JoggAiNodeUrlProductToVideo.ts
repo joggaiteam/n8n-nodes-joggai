@@ -17,6 +17,8 @@ import {
 	executeGeneratePreviewVideoFromProductOperation,
 } from './UrlToVideoOperation/GeneratePreviewVideoFromProduct';
 
+import { URL_TO_VIDEO_RESOURCE } from '../../const/joggAiNode';
+
 export const urlProductToVideoProperties: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -25,37 +27,41 @@ export const urlProductToVideoProperties: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['urlProductToVideo'],
+				resource: [URL_TO_VIDEO_RESOURCE.value],
 			},
 		},
 		options: [
 			{
-				name: 'Upload URL to Create Product',
-				value: 'uploadUrlCreateProduct',
+				name: URL_TO_VIDEO_RESOURCE.operation.UPLOAD_URL_TO_CREATE_PRODUCT.name,
+				value: URL_TO_VIDEO_RESOURCE.operation.UPLOAD_URL_TO_CREATE_PRODUCT.value,
+				description: URL_TO_VIDEO_RESOURCE.operation.UPLOAD_URL_TO_CREATE_PRODUCT.description,
+				action: URL_TO_VIDEO_RESOURCE.operation.UPLOAD_URL_TO_CREATE_PRODUCT.name,
+			},
+			{
+				name: URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.name,
+				value: URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.value,
+				description: URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.description,
+				action: URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.name,
+			},
+			{
+				name: URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.name,
+				value: URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value,
 				description:
-					'Get product information by crawling the provided URL or create a new product with provided information',
-				action: 'Upload URL to Create Product',
+					URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.description,
+				action: URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.name,
 			},
 			{
-				name: 'Update Product Information',
-				value: 'updateProductInformation',
-				description: 'Optional step to update product details',
-				action: 'Update Product Information',
-			},
-			{
-				name: 'Generate Video From Product Information',
-				value: 'generateVideoFromProductInformation',
-				description: 'Final step to generate the product video',
-				action: 'Generate Video from Product Information',
-			},
-			{
-				name: 'Generate Preview Video From Product Information',
-				value: 'generatePreviewVideoFromProductInformation',
-				description: 'You can generate a preview video using the product_id obtained from the Upload URL to create a product',
-				action: 'Generate Preview Video from Product Information',
+				name: URL_TO_VIDEO_RESOURCE.operation.GENERATE_PREVIEW_VIDEO_FROM_PRODUCT_INFORMATION.name,
+				value:
+					URL_TO_VIDEO_RESOURCE.operation.GENERATE_PREVIEW_VIDEO_FROM_PRODUCT_INFORMATION.value,
+				description:
+					URL_TO_VIDEO_RESOURCE.operation.GENERATE_PREVIEW_VIDEO_FROM_PRODUCT_INFORMATION
+						.description,
+				action:
+					URL_TO_VIDEO_RESOURCE.operation.GENERATE_PREVIEW_VIDEO_FROM_PRODUCT_INFORMATION.name,
 			},
 		],
-		default: 'uploadUrlCreateProduct',
+		default: URL_TO_VIDEO_RESOURCE.operation.UPLOAD_URL_TO_CREATE_PRODUCT.value,
 		required: true,
 	},
 	...uploadUrlCreateProductProperties,
@@ -70,13 +76,13 @@ export async function executeUrlProductToVideoOperation(
 ): Promise<INodeExecutionData[]> {
 	const operation = this.getNodeParameter('operation', i) as string;
 	switch (operation) {
-		case 'uploadUrlCreateProduct':
+		case URL_TO_VIDEO_RESOURCE.operation.UPLOAD_URL_TO_CREATE_PRODUCT.value:
 			return await executeUploadUrlCreateProductOperation.call(this, i);
-		case 'updateProductInformation':
+		case URL_TO_VIDEO_RESOURCE.operation.UPDATE_PRODUCT_INFORMATION.value:
 			return await executeUpdateProductInformationOperation.call(this, i);
-		case 'generateVideoFromProductInformation':
+		case URL_TO_VIDEO_RESOURCE.operation.GENERATE_VIDEO_FROM_PRODUCT_INFORMATION.value:
 			return await executeGenerateVideoFromProductOperation.call(this, i);
-		case 'generatePreviewVideoFromProductInformation':
+		case URL_TO_VIDEO_RESOURCE.operation.GENERATE_PREVIEW_VIDEO_FROM_PRODUCT_INFORMATION.value:
 			return await executeGeneratePreviewVideoFromProductOperation.call(this, i);
 		default:
 			return [];

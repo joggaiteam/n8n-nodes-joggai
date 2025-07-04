@@ -5,6 +5,8 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
+import { GET_GENERATED_VIDEO_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
 export const getGeneratedVideoProperties: INodeProperties[] = [
 	{
 		displayName: 'Project ID',
@@ -14,8 +16,8 @@ export const getGeneratedVideoProperties: INodeProperties[] = [
 		description: 'The ID of the project to retrieve',
 		displayOptions: {
 			show: {
-				resource: ['getGeneratedVideoAction'],
-				operation: ['getGeneratedVideo'],
+				resource: [GET_GENERATED_VIDEO_RESOURCE.value],
+				operation: [GET_GENERATED_VIDEO_RESOURCE.operation.GET_GENERATED_VIDEO.value],
 			},
 		},
 		required: true,
@@ -30,7 +32,7 @@ export async function executeGetGeneratedVideoOperation(
 
 	const projectId = this.getNodeParameter('projectId', i) as number;
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',

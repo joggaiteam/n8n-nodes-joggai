@@ -5,6 +5,8 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
+import { ASSETS_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
 export const checkPhotoStatusProperties: INodeProperties[] = [
 	{
 		displayName: 'Photo ID',
@@ -13,10 +15,11 @@ export const checkPhotoStatusProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['checkPhotoStatus'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.CHECK_PHOTO_GENERATION_STATUS.value],
 			},
 		},
+		required: true,
 	},
 ];
 
@@ -28,7 +31,7 @@ export async function executeCheckPhotoStatusOperation(
 
 	const photoId = this.getNodeParameter('photoId', i) as string;
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',

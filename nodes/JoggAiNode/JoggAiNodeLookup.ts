@@ -11,6 +11,8 @@ import {
 } from './LookupOperation/GetVisualStyle';
 import { musicListProperties, executeMusicListOperation } from './LookupOperation/GetMusic';
 
+import { LOOKUP_RESOURCE } from '../../const/joggAiNode';
+
 export const lookupProperties: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -19,36 +21,36 @@ export const lookupProperties: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
+				resource: [LOOKUP_RESOURCE.value],
 			},
 		},
 		options: [
 			{
-				name: 'Get My Voice',
-				value: 'voice:list',
-				description: 'Retrieve a list of your available voice with specified gender filter',
-				action: 'Get My Voice',
+				name: LOOKUP_RESOURCE.operation.LIST_VOICE.name,
+				value: LOOKUP_RESOURCE.operation.LIST_VOICE.value,
+				description: LOOKUP_RESOURCE.operation.LIST_VOICE.description,
+				action: LOOKUP_RESOURCE.operation.LIST_VOICE.name,
 			},
 			{
-				name: 'Get Visual Style',
-				value: 'visualStyle:list',
-				description: 'Get list of Visual Style',
-				action: 'Get Visual Style',
+				name: LOOKUP_RESOURCE.operation.LIST_VISUAL_STYLE.name,
+				value: LOOKUP_RESOURCE.operation.LIST_VISUAL_STYLE.value,
+				description: LOOKUP_RESOURCE.operation.LIST_VISUAL_STYLE.description,
+				action: LOOKUP_RESOURCE.operation.LIST_VISUAL_STYLE.name,
 			},
 			{
-				name: 'Get My Template',
-				value: 'template:list',
-				description: 'Get list of your custom templates',
-				action: 'Get My Template',
+				name: LOOKUP_RESOURCE.operation.LIST_TEMPLATE.name,
+				value: LOOKUP_RESOURCE.operation.LIST_TEMPLATE.value,
+				description: LOOKUP_RESOURCE.operation.LIST_TEMPLATE.description,
+				action: LOOKUP_RESOURCE.operation.LIST_TEMPLATE.name,
 			},
 			{
-				name: 'Get Music List from JoggAI',
-				value: 'music:list',
-				description: 'Get a list of jogg music',
-				action: 'Get Music List from JoggAI',
+				name: LOOKUP_RESOURCE.operation.LIST_MUSIC.name,
+				value: LOOKUP_RESOURCE.operation.LIST_MUSIC.value,
+				description: LOOKUP_RESOURCE.operation.LIST_MUSIC.description,
+				action: LOOKUP_RESOURCE.operation.LIST_MUSIC.name,
 			},
 		],
-		default: 'voice:list',
+		default: LOOKUP_RESOURCE.operation.LIST_VOICE.value,
 		required: true,
 	},
 	...voiceListProperties,
@@ -63,13 +65,13 @@ export async function executeLookupOperation(
 ): Promise<INodeExecutionData[]> {
 	const operation = this.getNodeParameter('operation', i) as string;
 	switch (operation) {
-		case 'voice:list':
+		case LOOKUP_RESOURCE.operation.LIST_VOICE.value:
 			return await executeVoiceListOperation.call(this, i);
-		case 'visualStyle:list':
+		case LOOKUP_RESOURCE.operation.LIST_VISUAL_STYLE.value:
 			return await executeVisualStyleListOperation.call(this, i);
-		case 'template:list':
+		case LOOKUP_RESOURCE.operation.LIST_TEMPLATE.value:
 			return await executeTemplateListOperation.call(this, i);
-		case 'music:list':
+		case LOOKUP_RESOURCE.operation.LIST_MUSIC.value:
 			return await executeMusicListOperation.call(this, i);
 		default:
 			return [];

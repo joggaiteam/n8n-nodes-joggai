@@ -5,6 +5,8 @@ import {
 	executeCreateVideoFromTemplateOperation,
 } from './TemplateOperation/CreateVideoFromTemplate';
 
+import { TEMPLATE_RESOURCE } from '../../const/joggAiNode';
+
 export const templateProperties: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -13,18 +15,18 @@ export const templateProperties: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['template'],
+				resource: [TEMPLATE_RESOURCE.value],
 			},
 		},
 		options: [
 			{
-				name: 'Create Video From Template',
-				value: 'createVideoFromTemplate',
-				description: 'Create video from Your Template',
-				action: 'Create Video From Template',
+				name: TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.name,
+				value: TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value,
+				description: TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.description,
+				action: TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.name,
 			},
 		],
-		default: 'createVideoFromTemplate',
+		default: TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value,
 		required: true,
 	},
 	...createVideoFromTemplateProperties,
@@ -36,7 +38,7 @@ export async function executeTemplateOperation(
 ): Promise<INodeExecutionData[]> {
 	const operation = this.getNodeParameter('operation', i) as string;
 	switch (operation) {
-		case 'createVideoFromTemplate':
+		case TEMPLATE_RESOURCE.operation.CREATE_VIDEO_FROM_TEMPLATE.value:
 			return await executeCreateVideoFromTemplateOperation.call(this, i);
 		default:
 			return [];

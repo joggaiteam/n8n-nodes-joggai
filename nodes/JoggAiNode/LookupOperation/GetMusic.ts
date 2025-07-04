@@ -5,6 +5,8 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
+import { CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
 export const musicListProperties: INodeProperties[] = [];
 
 export async function executeMusicListOperation(
@@ -13,7 +15,7 @@ export async function executeMusicListOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',

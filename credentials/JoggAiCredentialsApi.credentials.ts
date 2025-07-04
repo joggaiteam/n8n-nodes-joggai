@@ -5,8 +5,10 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
+import { CREDENTIALS_API_NAME } from '../const/joggAiNode';
+
 export class JoggAiCredentialsApi implements ICredentialType {
-	name = 'joggAiCredentialsApi';
+	name = CREDENTIALS_API_NAME;
 	displayName = 'JoggAI Credentials API';
 	documentationUrl = 'https://docs.jogg.ai/api-reference/QuickStart/GettingStarted';
 

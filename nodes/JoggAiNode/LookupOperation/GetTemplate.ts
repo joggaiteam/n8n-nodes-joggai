@@ -3,7 +3,12 @@ import {
 	IExecuteFunctions,
 	IHttpRequestOptions,
 	INodeExecutionData,
+	IDataObject,
 } from 'n8n-workflow';
+
+import { LOOKUP_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
+import { aspectRatioOptions } from '../../../const/aspectRatio';
 
 export const templateListProperties: INodeProperties[] = [
 	{
@@ -14,8 +19,8 @@ export const templateListProperties: INodeProperties[] = [
 		default: 'templates',
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['template:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_TEMPLATE.value],
 			},
 		},
 		options: [
@@ -36,32 +41,14 @@ export const templateListProperties: INodeProperties[] = [
 		description: 'Screen aspect ratio',
 		name: 'aspectRatio',
 		type: 'options',
-		required: false,
 		default: -1,
 		displayOptions: {
 			show: {
-				resource: ['lookup'],
-				operation: ['template:list'],
+				resource: [LOOKUP_RESOURCE.value],
+				operation: [LOOKUP_RESOURCE.operation.LIST_TEMPLATE.value],
 			},
 		},
-		options: [
-			{
-				name: 'All',
-				value: -1,
-			},
-			{
-				name: '[9:16]',
-				value: 0,
-			},
-			{
-				name: '[16:9]',
-				value: 1,
-			},
-			{
-				name: '[1:1]',
-				value: 2,
-			},
-		],
+		options: aspectRatioOptions,
 	},
 ];
 
@@ -75,16 +62,11 @@ export async function executeTemplateListOperation(
 
 	let endpoint = `/v1/${templateSource}`;
 
+	const qs: IDataObject = {};
 	const aspectRatio = this.getNodeParameter('aspectRatio', i) as string;
-	const queryParams = [];
-	if (aspectRatio !== undefined) {
-		queryParams.push(`aspect_ratio=${aspectRatio}`);
-	}
-	if (queryParams.length > 0) {
-		endpoint += `?${queryParams.join('&')}`;
-	}
+	qs.aspect_ratio = aspectRatio;
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',
@@ -93,6 +75,7 @@ export async function executeTemplateListOperation(
 			'x-api-key': credentials.apiKey as string,
 			'Content-Type': 'application/json',
 		},
+		qs: qs,
 		json: true,
 	};
 

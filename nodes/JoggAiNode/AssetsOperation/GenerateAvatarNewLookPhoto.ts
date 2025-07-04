@@ -5,34 +5,27 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
+import { ASSETS_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+
+import { notSelectOption } from '../../../const/notSelect';
+import { photoAgeOptions } from '../../../const/age';
+import { photoAspectRatioOptions } from '../../../const/aspectRatio';
+import { avatarStyleOptions } from '../../../const/avatarStyle';
+import { genderCapitalOptions } from '../../../const/gender';
+import { photoModelOptions } from '../../../const/model';
+import { ethnicityOptions } from '../../../const/ethnicity';
+
 export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 	{
 		displayName: 'Age',
 		name: 'age',
 		type: 'options',
-		options: [
-			{
-				name: 'Teenager',
-				value: 'Teenager',
-			},
-			{
-				name: 'Young Adult',
-				value: 'Young adult',
-			},
-			{
-				name: 'Adult',
-				value: 'Adult',
-			},
-			{
-				name: 'Elderly',
-				value: 'Elderly',
-			},
-		],
+		options: photoAgeOptions,
 		default: 'Adult',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 		required: true,
@@ -41,22 +34,13 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		displayName: 'Aspect Ratio',
 		name: 'aspectRatio',
 		type: 'options',
-		options: [
-			{
-				name: 'Portrait [9:16]',
-				value: 0,
-			},
-			{
-				name: 'Landscape [16:9]',
-				value: 1,
-			},
-		],
+		options: photoAspectRatioOptions,
 		default: 0,
 		description: 'Photo aspect ratio',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 		required: true,
@@ -65,21 +49,12 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		displayName: 'Avatar Style',
 		name: 'avatarStyle',
 		type: 'options',
-		options: [
-			{
-				name: 'Professional',
-				value: 'Professional',
-			},
-			{
-				name: 'Social',
-				value: 'Social',
-			},
-		],
+		options: avatarStyleOptions,
 		default: 'Professional',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 		required: true,
@@ -88,21 +63,12 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		displayName: 'Gender',
 		name: 'gender',
 		type: 'options',
-		options: [
-			{
-				name: 'Female',
-				value: 'Female',
-			},
-			{
-				name: 'Male',
-				value: 'Male',
-			},
-		],
+		options: genderCapitalOptions,
 		default: 'Female',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 		required: true,
@@ -114,8 +80,8 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 		required: true,
@@ -124,21 +90,12 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		displayName: 'Model',
 		name: 'model',
 		type: 'options',
-		options: [
-			{
-				name: 'Classic',
-				value: 'classic',
-			},
-			{
-				name: 'Modern',
-				value: 'modern',
-			},
-		],
+		options: photoModelOptions,
 		default: 'classic',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 		required: true,
@@ -150,8 +107,8 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 	},
@@ -162,8 +119,8 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 	},
@@ -171,45 +128,12 @@ export const generateAvatarNewLookPhotoProperties: INodeProperties[] = [
 		displayName: 'Ethnicity',
 		name: 'ethnicity',
 		type: 'options',
-		options: [
-			{
-				name: 'No Select',
-				value: '',
-			},
-			{
-				name: 'European',
-				value: 'European',
-			},
-			{
-				name: 'African',
-				value: 'African',
-			},
-			{
-				name: 'South Asian',
-				value: 'South Asian',
-			},
-			{
-				name: 'East Asian',
-				value: 'East Asian',
-			},
-			{
-				name: 'Middle Eastern',
-				value: 'Middle Eastern',
-			},
-			{
-				name: 'South American',
-				value: 'South American',
-			},
-			{
-				name: 'North American',
-				value: 'North American',
-			},
-		],
+		options: [notSelectOption, ...ethnicityOptions],
 		default: '',
 		displayOptions: {
 			show: {
-				resource: ['assets'],
-				operation: ['generateNewLook'],
+				resource: [ASSETS_RESOURCE.value],
+				operation: [ASSETS_RESOURCE.operation.GENERATE_AVATAR_NEW_LOOK_PHOTO.value],
 			},
 		},
 	},
@@ -231,7 +155,7 @@ export async function executeGenerateAvatarNewLookPhotoOperation(
 	const gender = this.getNodeParameter('gender', i) as string;
 	const model = this.getNodeParameter('model', i) as string;
 
-	const credentials = await this.getCredentials('joggAiCredentialsApi');
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const body = {
 		age,

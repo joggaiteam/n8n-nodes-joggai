@@ -19,6 +19,16 @@ import {
 	executeGetGenerateVideoActionOperation,
 } from './JoggAiNodeGetGenerateVideoAction';
 
+import {
+	CREDENTIALS_API_NAME,
+	LOOKUP_RESOURCE,
+	ASSETS_RESOURCE,
+	TEMPLATE_RESOURCE,
+	TALKING_AVATAR_RESOURCE,
+	URL_TO_VIDEO_RESOURCE,
+	GET_GENERATED_VIDEO_RESOURCE,
+} from '../../const/joggAiNode';
+
 export class JoggAiNode implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'JoggAI',
@@ -35,7 +45,7 @@ export class JoggAiNode implements INodeType {
 		outputs: [NodeConnectionType.Main],
 		credentials: [
 			{
-				name: 'joggAiCredentialsApi',
+				name: CREDENTIALS_API_NAME,
 				required: true,
 			},
 		],
@@ -47,31 +57,31 @@ export class JoggAiNode implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: 'Jogg.ai Lookup',
-						value: 'lookup',
+						name: LOOKUP_RESOURCE.name,
+						value: LOOKUP_RESOURCE.value,
 					},
 					{
-						name: 'Jogg.ai Assets',
-						value: 'assets',
+						name: ASSETS_RESOURCE.name,
+						value: ASSETS_RESOURCE.value,
 					},
 					{
-						name: 'Jogg.ai Template',
-						value: 'template',
+						name: TEMPLATE_RESOURCE.name,
+						value: TEMPLATE_RESOURCE.value,
 					},
 					{
-						name: 'Talking Avatar',
-						value: 'talkingAvatar',
+						name: TALKING_AVATAR_RESOURCE.name,
+						value: TALKING_AVATAR_RESOURCE.value,
 					},
 					{
-						name: 'URL / Product to video',
-						value: 'urlProductToVideo',
+						name: URL_TO_VIDEO_RESOURCE.name,
+						value: URL_TO_VIDEO_RESOURCE.value,
 					},
 					{
-						name: 'Get Generated Video',
-						value: 'getGeneratedVideoAction',
+						name: GET_GENERATED_VIDEO_RESOURCE.name,
+						value: GET_GENERATED_VIDEO_RESOURCE.value,
 					},
 				],
-				default: 'lookup',
+				default: LOOKUP_RESOURCE.value,
 				required: true,
 			},
 			...lookupProperties,
@@ -84,39 +94,43 @@ export class JoggAiNode implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
-		// 对每个输入项执行操作
+		const items = this.getInputData();
 		for (let i = 0; i < items.length; i++) {
 			try {
 				const resource = this.getNodeParameter('resource', i) as string;
-
-				if (resource === 'lookup') {
-					const lookupResults = await executeLookupOperation.call(this, i);
-					returnData.push(...lookupResults);
-				} else if (resource === 'assets') {
-					const assetsResults = await executeAssetsOperation.call(this, i);
-					returnData.push(...assetsResults);
-				} else if (resource === 'template') {
-					const templateResults = await executeTemplateOperation.call(this, i);
-					returnData.push(...templateResults);
-				} else if (resource === 'talkingAvatar') {
-					const talkingAvatarResults = await executeTalkingAvatarOperation.call(this, i);
-					returnData.push(...talkingAvatarResults);
-				} else if (resource === 'urlProductToVideo') {
-					const urlProductToVideoResults = await executeUrlProductToVideoOperation.call(this, i);
-					returnData.push(...urlProductToVideoResults);
-				} else if (resource === 'getGeneratedVideoAction') {
-					const getGenerateVideoResults = await executeGetGenerateVideoActionOperation.call(
-						this,
-						i,
-					);
-					returnData.push(...getGenerateVideoResults);
+				switch (resource) {
+					case LOOKUP_RESOURCE.value:
+						const lookupResults = await executeLookupOperation.call(this, i);
+						returnData.push(...lookupResults);
+						break;
+					case ASSETS_RESOURCE.value:
+						const assetsResults = await executeAssetsOperation.call(this, i);
+						returnData.push(...assetsResults);
+						break;
+					case TEMPLATE_RESOURCE.value:
+						const templateResults = await executeTemplateOperation.call(this, i);
+						returnData.push(...templateResults);
+						break;
+					case TALKING_AVATAR_RESOURCE.value:
+						const talkingAvatarResults = await executeTalkingAvatarOperation.call(this, i);
+						returnData.push(...talkingAvatarResults);
+						break;
+					case URL_TO_VIDEO_RESOURCE.value:
+						const urlProductToVideoResults = await executeUrlProductToVideoOperation.call(this, i);
+						returnData.push(...urlProductToVideoResults);
+						break;
+					case GET_GENERATED_VIDEO_RESOURCE.value:
+						const getGenerateVideoResults = await executeGetGenerateVideoActionOperation.call(
+							this,
+							i,
+						);
+						returnData.push(...getGenerateVideoResults);
+						break;
 				}
 			} catch (error) {
-				// 打印错误信息
-				this.logger.error('请求失败: ' + error.message);
+				this.logger.error('[joggAiNode] request failed: ' + error.message);
 
 				if (this.continueOnFail()) {
 					const executionData = this.helpers.constructExecutionMetaData(
