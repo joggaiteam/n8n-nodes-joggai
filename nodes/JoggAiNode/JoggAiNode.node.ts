@@ -67,7 +67,7 @@ export class JoggAiNode implements INodeType {
 						value: 'urlProductToVideo',
 					},
 					{
-						name: 'Get Generate Video',
+						name: 'Get Generated Video',
 						value: 'getGeneratedVideoAction',
 					},
 				],
