@@ -668,8 +668,8 @@ async function executeUploadFileOperation(
 
 		// 执行文件上传
 		try {
-			// 获取二进制数据
-			const binaryData = items[i].binary[binaryPropertyName];
+			// n8n在内部已经处理了二进制数据，我们直接使用内置方法获取
+			const binaryDataBuffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
 
 			// 使用签名URL上传文件数据
 			const uploadOptions: IHttpRequestOptions = {
@@ -678,11 +678,11 @@ async function executeUploadFileOperation(
 				headers: {
 					'Content-Type': 'application/octet-stream',
 				},
-				body: binaryData.data,
+				body: binaryDataBuffer,
 				json: false,
 			};
 
-			this.logger.info('正在上传文件到签名URL 请求参数: ' + JSON.stringify(uploadOptions));
+			this.logger.info('正在上传文件到签名URL');
 			const uploadResponse = await this.helpers.httpRequest(uploadOptions);
 			resultData.uploadStatus = 'success';
 			resultData.uploadResponse = uploadResponse;
