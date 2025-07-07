@@ -8,6 +8,7 @@ import {
 import { TALKING_AVATAR_RESOURCE } from '../../const/joggAiNode';
 
 export const talkingAvatarProperties: INodeProperties[] = [
+	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -26,7 +27,7 @@ export const talkingAvatarProperties: INodeProperties[] = [
 				action: TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.name,
 			},
 		],
-		default: 'createTalkingAvatar',
+		default: TALKING_AVATAR_RESOURCE.operation.CREATE_TALKING_AVATAR_VIDEOS.value,
 		required: true,
 	},
 	...createTalkingAvatarProperties,

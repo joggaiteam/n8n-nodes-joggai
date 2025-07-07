@@ -80,7 +80,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		type: 'number',
 		default: 0,
 		required: true,
-		description: 'Avatar id from Jogg Avatar or Your Avatar',
+		description: 'Avatar ID from Jogg Avatar or Your Avatar',
 		displayOptions: {
 			show: {
 				resource: [URL_TO_VIDEO_RESOURCE.value],
@@ -138,7 +138,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'voiceId',
 		type: 'string',
 		default: '',
-		description: 'Voice id from voice list',
+		description: 'Voice ID from voice list',
 		displayOptions: {
 			show: {
 				resource: [URL_TO_VIDEO_RESOURCE.value],
@@ -151,7 +151,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'musicId',
 		type: 'number',
 		default: 0,
-		description: 'Music id from music list',
+		description: 'Music ID from music list',
 		displayOptions: {
 			show: {
 				resource: [URL_TO_VIDEO_RESOURCE.value],
@@ -204,6 +204,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'caption',
 		type: 'boolean',
 		default: false,
+		// eslint-disable-next-line n8n-nodes-base/node-param-description-boolean-without-whether
 		description: 'Controls subtitle rendering',
 		displayOptions: {
 			show: {

@@ -18,6 +18,9 @@ export class JoggAiCredentialsApi implements ICredentialType {
 			name: 'apiKey',
 			type: 'string',
 			default: '',
+			typeOptions: {
+				password: true,
+			},
 		},
 		{
 			displayName: 'Domain',

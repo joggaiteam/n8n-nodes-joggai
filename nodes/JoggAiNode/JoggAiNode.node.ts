@@ -33,10 +33,11 @@ export class JoggAiNode implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'JoggAI',
 		name: 'joggAiNode',
+		// eslint-disable-next-line n8n-nodes-base/node-class-description-icon-not-svg
 		icon: 'file:joggai.png',
 		group: ['transform'],
 		version: 1,
-		// subtitle: '={{$parameter["resource"] + ": " + $parameter["operation"]}}',
+		subtitle: '={{ $parameter["operation"] + ": " + $parameter["resource"] }}',
 		description: 'JoggAI Open API Node',
 		defaults: {
 			name: 'JoggAI',
@@ -50,6 +51,7 @@ export class JoggAiNode implements INodeType {
 			},
 		],
 		properties: [
+			// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 			{
 				displayName: 'Resource',
 				name: 'resource',

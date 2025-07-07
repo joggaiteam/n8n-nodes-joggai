@@ -8,6 +8,7 @@ import {
 import { GET_GENERATED_VIDEO_RESOURCE } from '../../const/joggAiNode';
 
 export const getGenerateVideoActionProperties: INodeProperties[] = [
+	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',

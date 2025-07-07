@@ -23,6 +23,7 @@ import {
 import { ASSETS_RESOURCE } from '../../const/joggAiNode';
 
 export const assetsProperties: INodeProperties[] = [
+	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',

@@ -8,6 +8,7 @@ import {
 import { TEMPLATE_RESOURCE } from '../../const/joggAiNode';
 
 export const templateProperties: INodeProperties[] = [
+	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',

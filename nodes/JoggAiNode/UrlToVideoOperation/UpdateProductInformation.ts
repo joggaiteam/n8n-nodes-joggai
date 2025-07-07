@@ -16,7 +16,7 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		name: 'productId',
 		type: 'string',
 		default: '',
-		description: 'Product ID obtained from Step 1 (POST /open/product) response data.id',
+		description: 'Product ID obtained from Step 1 (POST /open/product) response data.ID',
 		required: true,
 		displayOptions: {
 			show: {

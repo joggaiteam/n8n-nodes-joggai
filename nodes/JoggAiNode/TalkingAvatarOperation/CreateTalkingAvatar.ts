@@ -76,8 +76,7 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 		name: 'script',
 		type: 'string',
 		default: '',
-		description:
-			'Script content for the avatar to speak. Must provide either script or audio_script',
+		description: 'Script content for the avatar to speak. Must provide either script or audio_script.',
 		displayOptions: {
 			show: {
 				resource: [TALKING_AVATAR_RESOURCE.value],
@@ -90,7 +89,7 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 		name: 'audioUrl',
 		type: 'string',
 		default: '',
-		description: 'Url for Audio, either script or audio_url must be provided, but not both',
+		description: 'URL for Audio, either script or audio_url must be provided, but not both',
 		displayOptions: {
 			show: {
 				resource: [TALKING_AVATAR_RESOURCE.value],
@@ -117,6 +116,7 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 		name: 'caption',
 		type: 'boolean',
 		default: false,
+		// eslint-disable-next-line n8n-nodes-base/node-param-description-boolean-without-whether
 		description: 'Subtitle option',
 		displayOptions: {
 			show: {
