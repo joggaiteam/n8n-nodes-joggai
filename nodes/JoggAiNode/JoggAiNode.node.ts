@@ -18,6 +18,7 @@ import {
 	getGenerateVideoActionProperties,
 	executeGetGenerateVideoActionOperation,
 } from './JoggAiNodeGetGenerateVideoAction';
+import { webhookProperties, executeWebhookOperation } from './JoggAiNodeWebhook';
 
 import {
 	CREDENTIALS_API_NAME,
@@ -27,6 +28,7 @@ import {
 	TALKING_AVATAR_RESOURCE,
 	URL_TO_VIDEO_RESOURCE,
 	GET_GENERATED_VIDEO_RESOURCE,
+	WEBHOOK_RESOURCE,
 } from '../../const/joggAiNode';
 
 export class JoggAiNode implements INodeType {
@@ -82,6 +84,10 @@ export class JoggAiNode implements INodeType {
 						name: GET_GENERATED_VIDEO_RESOURCE.name,
 						value: GET_GENERATED_VIDEO_RESOURCE.value,
 					},
+					{
+						name: WEBHOOK_RESOURCE.name,
+						value: WEBHOOK_RESOURCE.value,
+					},
 				],
 				default: LOOKUP_RESOURCE.value,
 				required: true,
@@ -92,6 +98,7 @@ export class JoggAiNode implements INodeType {
 			...talkingAvatarProperties,
 			...urlProductToVideoProperties,
 			...getGenerateVideoActionProperties,
+			...webhookProperties,
 		],
 	};
 
@@ -129,6 +136,10 @@ export class JoggAiNode implements INodeType {
 							i,
 						);
 						returnData.push(...getGenerateVideoResults);
+						break;
+					case WEBHOOK_RESOURCE.value:
+						const webhookResults = await executeWebhookOperation.call(this, i);
+						returnData.push(...webhookResults);
 						break;
 				}
 			} catch (error) {

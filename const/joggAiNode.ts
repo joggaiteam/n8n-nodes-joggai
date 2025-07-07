@@ -137,3 +137,35 @@ export const GET_GENERATED_VIDEO_RESOURCE = {
 		},
 	},
 };
+
+export const WEBHOOK_RESOURCE = {
+	name: 'Webhook',
+	value: 'webhook',
+	operation: {
+		LIST_WEBHOOK: {
+			name: 'List of Webhook Endpoints',
+			value: 'webhook:list',
+			description: 'Get a list of configured webhook endpoints',
+		},
+		ADD_WEBHOOK: {
+			name: 'Add a Webhook Endpoint',
+			value: 'webhook:add',
+			description: 'Add a new webhook endpoint configuration',
+		},
+		UPDATE_WEBHOOK: {
+			name: 'Update a Webhook Endpoint',
+			value: 'webhook:update',
+			description: 'Update an existing webhook endpoint configuration',
+		},
+		DELETE_WEBHOOK: {
+			name: 'Delete a Webhook Endpoint',
+			value: 'webhook:delete',
+			description: 'Delete an existing webhook endpoint',
+		},
+		EVENTS_WEBHOOK: {
+			name: 'List of Available Webhook Events',
+			value: 'webhook:events',
+			description: 'Get a list of available webhook events',
+		},
+	},
+};

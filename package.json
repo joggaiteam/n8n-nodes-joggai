@@ -36,7 +36,8 @@
 			"dist/credentials/JoggAiCredentialsApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/JoggAiNode/JoggAiNode.node.js"
+			"dist/nodes/JoggAiNode/JoggAiNode.node.js",
+			"dist/nodes/JoggAiWebhookTrigger/JoggAiWebhookTrigger.node.js"
 		]
 	},
 	"devDependencies": {
