@@ -8,3 +8,6 @@ yarn.lock
 .vscode/launch.json
 .idea
 .cursorrules
+
+*.tgz
+output
