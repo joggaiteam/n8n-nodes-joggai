@@ -37,7 +37,7 @@
 		],
 		"nodes": [
 			"dist/nodes/JoggAiNode/JoggAiNode.node.js",
-			"dist/nodes/JoggAiWebhookTrigger/JoggAiWebhookTrigger.node.js"
+			"dist/nodes/JoggAiNode/JoggAiNodeTrigger.node.js"
 		]
 	},
 	"devDependencies": {

@@ -9,17 +9,17 @@ import { IWebhookFunctions } from 'n8n-workflow/dist/Interfaces';
 
 import { CREDENTIALS_API_NAME } from '../../const/joggAiNode';
 
-export class JoggAiWebhookTrigger implements INodeType {
+export class JoggAiNodeTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'JoggAI Webhook Trigger',
-		name: 'joggAiWebhookTrigger',
+		name: 'joggAiNodeTrigger',
 		group: ['trigger'],
 		version: 1,
 		description: 'Trigger from JoggAI webhook',
 		// eslint-disable-next-line n8n-nodes-base/node-class-description-icon-not-svg
 		icon: 'file:joggai.png',
 		defaults: {
-			name: 'JoggAI Webhook Trigger',
+			name: 'JoggAI Trigger',
 		},
 		inputs: [],
 		outputs: [NodeConnectionType.Main],
@@ -39,11 +39,51 @@ export class JoggAiWebhookTrigger implements INodeType {
 		],
 		properties: [
 			{
+				displayName: 'Trigger On',
+				name: 'events',
+				options: [
+					{
+						name: 'Generated Video Success',
+						value: 'generated_video_success',
+						description: 'Triggers when generated video is success',
+					},
+					{
+						name: 'Generated Video Failed',
+						value: 'generated_video_failed',
+						description: 'Triggers when generated video is failed',
+					},
+					{
+						name: 'Create Avatar Success',
+						value: 'create_avatar_success',
+						description: 'Triggers when create avatar is success',
+					},
+					{
+						name: 'Create Avatar Failed',
+						value: 'create_avatar_failed',
+						description: 'Triggers when create avatar is failed',
+					},
+				],
+				default: 'generated_video_success',
+				required: true,
+				// type: 'multiOptions',
+				type: 'options',
+			},
+			{
 				displayName: 'Webhook Secret',
 				name: 'webhookSecret',
 				// eslint-disable-next-line n8n-nodes-base/node-param-type-options-password-missing
 				type: 'string',
 				default: '',
+				displayOptions: {
+					show: {
+						events: [
+							'generated_video_success',
+							'generated_video_failed',
+							'create_avatar_success',
+							'create_avatar_failed',
+						],
+					},
+				},
 			},
 		],
 	};
