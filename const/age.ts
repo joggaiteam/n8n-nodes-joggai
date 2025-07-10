@@ -31,3 +31,18 @@ export const photoAgeOptions = [
 		value: 'Elderly',
 	},
 ];
+
+export const avatarAgeOptions = [
+	{
+		name: 'Adult',
+		value: 'adult',
+	},
+	{
+		name: 'Senior',
+		value: 'senior',
+	},
+	{
+		name: 'Young Adult',
+		value: 'young_adult',
+	},
+];

@@ -1,6 +1,18 @@
 import { INodeProperties, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
 
 import {
+	getAvatarListFromLibraryProperties,
+	executeGetAvatarListFromLibraryOperation,
+} from './AvatarOperation/GetAvatarListFromLibrary';
+import {
+	getInstantAvatarListProperties,
+	executeGetInstantAvatarListOperation,
+} from './AvatarOperation/GetInstantAvatarList';
+import {
+	getPhotoAvatarListProperties,
+	executeGetPhotoAvatarListOperation,
+} from './AvatarOperation/GetPhotoAvatarList';
+import {
 	generateAiAvatarPhotoProperties,
 	executeGenerateAiAvatarPhotoOperation,
 } from './AvatarOperation/GenerateAiAvatarPhoto';
@@ -75,6 +87,9 @@ export const avatarProperties: INodeProperties[] = [
 		default: AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value,
 		required: true,
 	},
+	...getAvatarListFromLibraryProperties,
+	...getPhotoAvatarListProperties,
+	...getInstantAvatarListProperties,
 	...generateAiAvatarPhotoProperties,
 	...checkPhotoStatusProperties,
 	...addMotionProperties,
@@ -89,9 +104,11 @@ export async function executeAvatarOperation(
 
 	switch (operation) {
 		case AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value:
+			return await executeGetAvatarListFromLibraryOperation.call(this, i);
 		case AVATAR_RESOURCE.operation.GET_INSTANT_AVATARS.value:
+			return await executeGetInstantAvatarListOperation.call(this, i);
 		case AVATAR_RESOURCE.operation.GET_PHOTO_AVATARS.value:
-		// TODO
+			return await executeGetPhotoAvatarListOperation.call(this, i);
 		case AVATAR_RESOURCE.operation.GENERATE_AI_PHOTO.value:
 			return await executeGenerateAiAvatarPhotoOperation.call(this, i);
 		case AVATAR_RESOURCE.operation.CHECK_PHOTO_STATUS.value:

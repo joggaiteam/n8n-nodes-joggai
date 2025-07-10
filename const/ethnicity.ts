@@ -28,3 +28,34 @@ export const ethnicityOptions = [
 		value: 'North American',
 	},
 ];
+
+export const ethnicity2Options = [
+	{
+		name: 'European',
+		value: 'european',
+	},
+	{
+		name: 'African',
+		value: 'african',
+	},
+	{
+		name: 'South Asian',
+		value: 'south_asian',
+	},
+	{
+		name: 'East Asian',
+		value: 'east_asian',
+	},
+	{
+		name: 'Middle Eastern',
+		value: 'middle_eastern',
+	},
+	{
+		name: 'South American',
+		value: 'south_american',
+	},
+	{
+		name: 'North American',
+		value: 'north_american',
+	},
+];

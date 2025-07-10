@@ -8,3 +8,14 @@ export const avatarStyleOptions = [
 		value: 'Social',
 	},
 ];
+
+export const avatarStyle2Options = [
+	{
+		name: 'Professional',
+		value: 'professional',
+	},
+	{
+		name: 'Social',
+		value: 'social',
+	},
+];
