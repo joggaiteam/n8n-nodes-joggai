@@ -6,30 +6,29 @@ import {
 	NodeOperationError,
 	NodeConnectionType,
 } from 'n8n-workflow';
-import { lookupProperties, executeLookupOperation } from './JoggAiNodeLookup';
-import { assetsProperties, executeAssetsOperation } from './JoggAiNodeAssets';
-import { templateProperties, executeTemplateOperation } from './JoggAiNodeTemplate';
-import { talkingAvatarProperties, executeTalkingAvatarOperation } from './JoggAiNodeTalkingAvatar';
-import {
-	urlProductToVideoProperties,
-	executeUrlProductToVideoOperation,
-} from './JoggAiNodeUrlProductToVideo';
-import {
-	getGenerateVideoActionProperties,
-	executeGetGenerateVideoActionOperation,
-} from './JoggAiNodeGetGenerateVideoAction';
-import { webhookProperties, executeWebhookOperation } from './JoggAiNodeWebhook';
+
+import { videoProperties, executeVideoOperation } from './Video';
+import { avatarProperties, executeAvatarOperation } from './Avatar';
+import { voiceProperties, executeVoiceOperation } from './Voice';
+import { templateProperties, executeTemplateOperation } from './Template';
+import { productProperties, executeProductOperation } from './Product';
+import { aiScriptActionProperties, executeAiScriptActionOperation } from './AiScript';
+import { fileProperties, executeFileOperation } from './File';
+import { musicProperties, executeMusicOperation } from './Music';
+import { visualStyleProperties, executeVisualStyleOperation } from './VisualStyle';
 
 import {
 	CREDENTIALS_API_NAME,
-	LOOKUP_RESOURCE,
-	ASSETS_RESOURCE,
+	VIDEO_RESOURCE,
+	AVATAR_RESOURCE,
+	VOICE_RESOURCE,
 	TEMPLATE_RESOURCE,
-	TALKING_AVATAR_RESOURCE,
-	URL_TO_VIDEO_RESOURCE,
-	GET_GENERATED_VIDEO_RESOURCE,
-	WEBHOOK_RESOURCE,
-} from '../../const/joggAiNode';
+	PRODUCT_RESOURCE,
+	AI_SCRIPT_RESOURCE,
+	FILE_RESOURCE,
+	MUSIC_RESOURCE,
+	VISUAL_STYLE_RESOURCE,
+} from '../../const/joggAiNode2';
 
 export class JoggAiNode implements INodeType {
 	description: INodeTypeDescription = {
@@ -61,44 +60,54 @@ export class JoggAiNode implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: LOOKUP_RESOURCE.name,
-						value: LOOKUP_RESOURCE.value,
+						name: VIDEO_RESOURCE.name,
+						value: VIDEO_RESOURCE.value,
 					},
 					{
-						name: ASSETS_RESOURCE.name,
-						value: ASSETS_RESOURCE.value,
+						name: AVATAR_RESOURCE.name,
+						value: AVATAR_RESOURCE.value,
+					},
+					{
+						name: VOICE_RESOURCE.name,
+						value: VOICE_RESOURCE.value,
 					},
 					{
 						name: TEMPLATE_RESOURCE.name,
 						value: TEMPLATE_RESOURCE.value,
 					},
 					{
-						name: TALKING_AVATAR_RESOURCE.name,
-						value: TALKING_AVATAR_RESOURCE.value,
+						name: PRODUCT_RESOURCE.name,
+						value: PRODUCT_RESOURCE.value,
 					},
 					{
-						name: URL_TO_VIDEO_RESOURCE.name,
-						value: URL_TO_VIDEO_RESOURCE.value,
+						name: AI_SCRIPT_RESOURCE.name,
+						value: AI_SCRIPT_RESOURCE.value,
 					},
 					{
-						name: GET_GENERATED_VIDEO_RESOURCE.name,
-						value: GET_GENERATED_VIDEO_RESOURCE.value,
+						name: FILE_RESOURCE.name,
+						value: FILE_RESOURCE.value,
 					},
 					{
-						name: WEBHOOK_RESOURCE.name,
-						value: WEBHOOK_RESOURCE.value,
+						name: MUSIC_RESOURCE.name,
+						value: MUSIC_RESOURCE.value,
+					},
+					{
+						name: VISUAL_STYLE_RESOURCE.name,
+						value: VISUAL_STYLE_RESOURCE.value,
 					},
 				],
-				default: LOOKUP_RESOURCE.value,
+				default: VIDEO_RESOURCE.value,
 				required: true,
 			},
-			...lookupProperties,
-			...assetsProperties,
+			...videoProperties,
+			...avatarProperties,
+			...voiceProperties,
 			...templateProperties,
-			...talkingAvatarProperties,
-			...urlProductToVideoProperties,
-			...getGenerateVideoActionProperties,
-			...webhookProperties,
+			...productProperties,
+			...aiScriptActionProperties,
+			...fileProperties,
+			...musicProperties,
+			...visualStyleProperties,
 		],
 	};
 
@@ -110,36 +119,42 @@ export class JoggAiNode implements INodeType {
 			try {
 				const resource = this.getNodeParameter('resource', i) as string;
 				switch (resource) {
-					case LOOKUP_RESOURCE.value:
-						const lookupResults = await executeLookupOperation.call(this, i);
-						returnData.push(...lookupResults);
+					// TODO
+					case VIDEO_RESOURCE.value:
+						const videoResults = await executeVideoOperation.call(this, i);
+						returnData.push(...videoResults);
 						break;
-					case ASSETS_RESOURCE.value:
-						const assetsResults = await executeAssetsOperation.call(this, i);
-						returnData.push(...assetsResults);
+					case AVATAR_RESOURCE.value:
+						const avatarResults = await executeAvatarOperation.call(this, i);
+						returnData.push(...avatarResults);
+						break;
+					case VOICE_RESOURCE.value:
+						const voiceResults = await executeVoiceOperation.call(this, i);
+						returnData.push(...voiceResults);
 						break;
 					case TEMPLATE_RESOURCE.value:
 						const templateResults = await executeTemplateOperation.call(this, i);
 						returnData.push(...templateResults);
 						break;
-					case TALKING_AVATAR_RESOURCE.value:
-						const talkingAvatarResults = await executeTalkingAvatarOperation.call(this, i);
-						returnData.push(...talkingAvatarResults);
+					case PRODUCT_RESOURCE.value:
+						const productResults = await executeProductOperation.call(this, i);
+						returnData.push(...productResults);
 						break;
-					case URL_TO_VIDEO_RESOURCE.value:
-						const urlProductToVideoResults = await executeUrlProductToVideoOperation.call(this, i);
-						returnData.push(...urlProductToVideoResults);
+					case AI_SCRIPT_RESOURCE.value:
+						const aiScriptResults = await executeAiScriptActionOperation.call(this, i);
+						returnData.push(...aiScriptResults);
 						break;
-					case GET_GENERATED_VIDEO_RESOURCE.value:
-						const getGenerateVideoResults = await executeGetGenerateVideoActionOperation.call(
-							this,
-							i,
-						);
-						returnData.push(...getGenerateVideoResults);
+					case FILE_RESOURCE.value:
+						const fileResults = await executeFileOperation.call(this, i);
+						returnData.push(...fileResults);
 						break;
-					case WEBHOOK_RESOURCE.value:
-						const webhookResults = await executeWebhookOperation.call(this, i);
-						returnData.push(...webhookResults);
+					case MUSIC_RESOURCE.value:
+						const musicResults = await executeMusicOperation.call(this, i);
+						returnData.push(...musicResults);
+						break;
+					case VISUAL_STYLE_RESOURCE.value:
+						const visualStyleResults = await executeVisualStyleOperation.call(this, i);
+						returnData.push(...visualStyleResults);
 						break;
 				}
 			} catch (error) {

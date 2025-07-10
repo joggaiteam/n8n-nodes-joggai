@@ -5,7 +5,7 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
-import { CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+import { CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
 export const eventsWebhookProperties: INodeProperties[] = [];
 

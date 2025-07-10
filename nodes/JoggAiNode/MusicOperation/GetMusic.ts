@@ -7,9 +7,9 @@ import {
 
 import { CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
-export const listWebhookProperties: INodeProperties[] = [];
+export const musicListProperties: INodeProperties[] = [];
 
-export async function executeListWebhookOperation(
+export async function executeMusicListOperation(
 	this: IExecuteFunctions,
 	i: number,
 ): Promise<INodeExecutionData[]> {
@@ -19,9 +19,10 @@ export async function executeListWebhookOperation(
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',
-		url: `${credentials.domain as string}/v1/endpoints`,
+		url: `${credentials.domain as string}/v1/musics`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'Content-Type': 'application/json',
 		},
 		json: true,
 	};
@@ -34,7 +35,6 @@ export async function executeListWebhookOperation(
 		this.helpers.returnJsonArray([responseData]),
 		{ itemData: { item: i } },
 	);
-
 	returnData.push(...executionData);
 
 	return returnData;

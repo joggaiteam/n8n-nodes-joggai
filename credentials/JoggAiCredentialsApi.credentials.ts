@@ -5,7 +5,7 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-import { CREDENTIALS_API_NAME } from '../const/joggAiNode';
+import { CREDENTIALS_API_NAME } from '../const/joggAiNode2';
 
 export class JoggAiCredentialsApi implements ICredentialType {
 	name = CREDENTIALS_API_NAME;

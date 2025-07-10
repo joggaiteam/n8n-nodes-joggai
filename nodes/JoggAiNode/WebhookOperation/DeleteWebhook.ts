@@ -5,7 +5,7 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
-import { WEBHOOK_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode';
+import { WEBHOOK_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
 export const deleteWebhookProperties: INodeProperties[] = [
 	{

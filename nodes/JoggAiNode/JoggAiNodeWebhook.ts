@@ -15,7 +15,7 @@ import {
 	executeEventsWebhookOperation,
 } from './WebhookOperation/EventsWebhook';
 
-import { WEBHOOK_RESOURCE } from '../../const/joggAiNode';
+import { WEBHOOK_RESOURCE } from '../../const/joggAiNode2';
 
 export const webhookProperties: INodeProperties[] = [
 	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing

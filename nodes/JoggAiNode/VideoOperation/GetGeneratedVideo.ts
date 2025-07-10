@@ -5,23 +5,43 @@ import {
 	INodeExecutionData,
 } from 'n8n-workflow';
 
-import { CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
+import { VIDEO_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
-export const listWebhookProperties: INodeProperties[] = [];
+export const getGeneratedVideoProperties: INodeProperties[] = [
+	{
+		displayName: 'Project ID',
+		name: 'projectId',
+		type: 'string',
+		default: '',
+		description: 'The ID of the project to retrieve',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.GET.value],
+			},
+		},
+		required: true,
+	},
+];
 
-export async function executeListWebhookOperation(
+export async function executeGetGeneratedVideoOperation(
 	this: IExecuteFunctions,
 	i: number,
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
+	const projectId = this.getNodeParameter('projectId', i) as number;
+
 	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',
-		url: `${credentials.domain as string}/v1/endpoints`,
+		url: `${credentials.domain as string}/v1/project`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+		},
+		qs: {
+			project_id: projectId,
 		},
 		json: true,
 	};

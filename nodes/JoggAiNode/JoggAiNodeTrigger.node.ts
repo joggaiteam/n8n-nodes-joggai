@@ -7,7 +7,7 @@ import {
 } from 'n8n-workflow';
 import { IWebhookFunctions } from 'n8n-workflow/dist/Interfaces';
 
-import { CREDENTIALS_API_NAME } from '../../const/joggAiNode';
+import { CREDENTIALS_API_NAME } from '../../const/joggAiNode2';
 
 export class JoggAiNodeTrigger implements INodeType {
 	description: INodeTypeDescription = {
