@@ -29,6 +29,7 @@ export const generateAiAvatarPhotoProperties: INodeProperties[] = [
 			},
 		},
 		required: true,
+		description: 'The age group of the avatar',
 	},
 	{
 		displayName: 'Aspect Ratio',
@@ -36,7 +37,6 @@ export const generateAiAvatarPhotoProperties: INodeProperties[] = [
 		type: 'options',
 		options: photoAspectRatioOptions,
 		default: 0,
-		description: 'Photo aspect ratio',
 		displayOptions: {
 			show: {
 				resource: [AVATAR_RESOURCE.value],
@@ -44,6 +44,7 @@ export const generateAiAvatarPhotoProperties: INodeProperties[] = [
 			},
 		},
 		required: true,
+		description: 'The aspect ratio of the generated photo',
 	},
 	{
 		displayName: 'Avatar Style',
@@ -58,6 +59,7 @@ export const generateAiAvatarPhotoProperties: INodeProperties[] = [
 			},
 		},
 		required: true,
+		description: 'The overall style of the avatar photo',
 	},
 	{
 		displayName: 'Gender',
@@ -72,6 +74,7 @@ export const generateAiAvatarPhotoProperties: INodeProperties[] = [
 			},
 		},
 		required: true,
+		description: 'The gender of the avatar',
 	},
 	{
 		displayName: 'Model',
@@ -86,55 +89,61 @@ export const generateAiAvatarPhotoProperties: INodeProperties[] = [
 			},
 		},
 		required: true,
+		description: 'The generation model to use',
 	},
 	{
-		displayName: 'Appearance',
-		name: 'appearance',
-		type: 'string',
-		default: '',
+		displayName: 'Optional Details',
+		name: 'optionalDetails',
+		type: 'collection',
+		placeholder: 'Add Detail',
+		default: {},
 		displayOptions: {
 			show: {
 				resource: [AVATAR_RESOURCE.value],
 				operation: [AVATAR_RESOURCE.operation.GENERATE_AI_PHOTO.value],
 			},
 		},
-	},
-	{
-		displayName: 'Background',
-		name: 'background',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GENERATE_AI_PHOTO.value],
+		description: 'Add optional details to further customize the avatar photo',
+		options: [
+			{
+				displayName: 'Ethnicity',
+				name: 'ethnicity',
+				type: 'options',
+				options: [notSelectOption, ...ethnicityOptions],
+				default: '',
+				description: 'The ethnicity of the avatar',
 			},
-		},
-	},
-	{
-		displayName: 'Ethnicity',
-		name: 'ethnicity',
-		type: 'options',
-		options: [notSelectOption, ...ethnicityOptions],
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GENERATE_AI_PHOTO.value],
+			{
+				displayName: 'Appearance',
+				name: 'appearance',
+				type: 'string',
+				typeOptions: {
+					multiline: true,
+				},
+				default: '',
+				placeholder: 'e.g., wearing a red dress, has blonde hair',
+				description: 'Describe the desired appearance of the avatar',
 			},
-		},
-	},
-	{
-		displayName: 'Image URL',
-		name: 'imageUrl',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GENERATE_AI_PHOTO.value],
+			{
+				displayName: 'Background',
+				name: 'background',
+				type: 'string',
+				typeOptions: {
+					multiline: true,
+				},
+				default: '',
+				placeholder: 'e.g., in a modern office, outdoor cafe',
+				description: 'Describe the desired background of the photo',
 			},
-		},
+			{
+				displayName: 'Reference Image URL',
+				name: 'imageUrl',
+				type: 'string',
+				default: '',
+				placeholder: 'https://example.com/image.png',
+				description: 'URL of an image to use for reference',
+			},
+		],
 	},
 ];
 
@@ -145,27 +154,30 @@ export async function executeGenerateAiAvatarPhotoOperation(
 	const returnData: INodeExecutionData[] = [];
 
 	const age = this.getNodeParameter('age', i) as string;
-	const appearance = this.getNodeParameter('appearance', i) as string;
 	const aspectRatio = this.getNodeParameter('aspectRatio', i) as number;
 	const avatarStyle = this.getNodeParameter('avatarStyle', i) as string;
-	const background = this.getNodeParameter('background', i) as string;
-	const ethnicity = this.getNodeParameter('ethnicity', i) as string;
 	const gender = this.getNodeParameter('gender', i) as string;
-	const imageUrl = this.getNodeParameter('imageUrl', i) as string;
 	const model = this.getNodeParameter('model', i) as string;
+
+	const optionalDetails = this.getNodeParameter('optionalDetails', i) as {
+		ethnicity?: string;
+		appearance?: string;
+		background?: string;
+		imageUrl?: string;
+	};
 
 	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
 	const body = {
 		age,
-		appearance,
 		aspect_ratio: aspectRatio,
 		avatar_style: avatarStyle,
-		background,
-		ethnicity,
 		gender,
-		image_url: imageUrl,
 		model,
+		ethnicity: optionalDetails.ethnicity || '',
+		appearance: optionalDetails.appearance || '',
+		background: optionalDetails.background || '',
+		image_url: optionalDetails.imageUrl || '',
 	};
 
 	const options: IHttpRequestOptions = {

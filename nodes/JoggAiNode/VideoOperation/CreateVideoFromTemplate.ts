@@ -8,16 +8,44 @@ import {
 
 import { VIDEO_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
-import { templateTypeOptions } from '../../../const/templateType';
-import { avatarTypeOptions } from '../../../const/avatarType';
+import { languageOptions } from '../../../const/language';
 import { contentTypeOptions } from '../../../const/contentType';
 
 export const createVideoFromTemplateProperties: INodeProperties[] = [
+	// ----------------------------------
+	//         Core Required Fields
+	// ----------------------------------
+	{
+		displayName: 'Template Type',
+		name: 'template_type',
+		type: 'options',
+		default: 'common',
+		required: true,
+		options: [
+			{
+				name: 'Public Template',
+				value: 'common',
+			},
+			{
+				name: 'My Template',
+				value: 'user',
+			},
+		],
+		description: 'The source of the template to use',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
+			},
+		},
+	},
 	{
 		displayName: 'Template ID',
-		name: 'templateId',
+		name: 'template_id',
 		type: 'number',
-		default: 0,
+		default: '',
+		placeholder: '1234',
+		description: 'The ID of the template you want to use',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -28,102 +56,27 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 	},
 	{
 		displayName: 'Language',
-		name: 'language',
-		type: 'string',
-		default: '',
-		description: 'Language for text-to-speech conversion',
+		name: 'lang',
+		type: 'options',
+		default: 'english',
+		description: 'Language for text-to-speech (TTS) conversion',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
 			},
 		},
+		options: languageOptions,
 		required: true,
 	},
+
+	// ----------------------------------
+	//         Template Variables
+	// ----------------------------------
 	{
-		displayName: 'Template Type',
-		name: 'templateType',
-		type: 'options',
-		default: 'common',
-		description: 'Template source type',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
-			},
-		},
-		options: templateTypeOptions,
-		required: true,
-	},
-	{
-		displayName: 'Avatar ID',
-		name: 'avatarId',
-		type: 'number',
-		default: 0,
-		description: 'Digital person ID',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
-			},
-		},
-	},
-	{
-		displayName: 'Avatar Type',
-		name: 'avatarType',
-		type: 'options',
-		default: 0,
-		description: 'Avatar source type',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
-			},
-		},
-		options: avatarTypeOptions,
-	},
-	{
-		displayName: 'Voice ID',
-		name: 'voiceId',
-		type: 'string',
-		default: '',
-		description: 'Voice ID for text-to-speech',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
-			},
-		},
-	},
-	{
-		displayName: 'Caption',
-		name: 'caption',
-		type: 'boolean',
-		default: false,
-		description: 'Whether to enable captions',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
-			},
-		},
-	},
-	{
-		displayName: 'Music ID',
-		name: 'musicId',
-		type: 'number',
-		default: 0,
-		description: 'Background music ID',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
-			},
-		},
-	},
-	{
-		displayName: 'Variables',
+		displayName: 'Template Variables',
 		name: 'variables',
+		description: 'A list of variables to replace placeholders in the template',
 		placeholder: 'Add Variable',
 		type: 'fixedCollection',
 		typeOptions: {
@@ -204,6 +157,68 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 			},
 		],
 	},
+
+	// ----------------------------------
+	//         Optional Overrides
+	// ----------------------------------
+	{
+		displayName: 'Optional Overrides',
+		name: 'overrides',
+		type: 'collection',
+		placeholder: 'Add Override',
+		default: {},
+		description: 'Optional settings to override those predefined in the template',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
+			},
+		},
+		// eslint-disable-next-line n8n-nodes-base/node-param-collection-type-unsorted-items
+		options: [
+			{
+				displayName: 'Avatar Type',
+				name: 'avatar_type',
+				type: 'options',
+				options: [
+					{ name: 'Public Avatar', value: 0 },
+					{ name: 'Custom Avatar', value: 1 },
+				],
+				default: 0,
+				description: 'Override the template\'s avatar source',
+			},
+			{
+				displayName: 'Avatar ID',
+				name: 'avatar_id',
+				type: 'number',
+				default: '',
+				description: 'Override the template\'s avatar ID',
+			},
+			{
+				displayName: 'Voice ID',
+				name: 'voice_id',
+				type: 'string',
+				default: '',
+				placeholder: 'en-US-ChristopherNeural',
+				description: 'Override the template\'s voice ID',
+			},
+			{
+				displayName: 'Music ID',
+				name: 'music_id',
+				type: 'number',
+				default: '',
+				description: 'Override the template\'s background music ID',
+			},
+			{
+				displayName: 'Enable Captions',
+				name: 'caption',
+				type: 'boolean',
+				default: true,
+				// eslint-disable-next-line n8n-nodes-base/node-param-description-boolean-without-whether
+				description: 'Override the caption setting for the video',
+			},
+		],
+	},
 ];
 
 export async function executeCreateVideoFromTemplateOperation(
@@ -212,21 +227,21 @@ export async function executeCreateVideoFromTemplateOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const templateId = this.getNodeParameter('templateId', i) as number;
-	const language = this.getNodeParameter('language', i) as string;
-	const templateType = this.getNodeParameter('templateType', i) as string;
-	const avatarId = this.getNodeParameter('avatarId', i) as number;
-	const avatarType = this.getNodeParameter('avatarType', i) as number;
-	const voiceId = this.getNodeParameter('voiceId', i) as string;
-	const caption = this.getNodeParameter('caption', i) as boolean;
-	const musicId = this.getNodeParameter('musicId', i) as number;
+	const templateId = this.getNodeParameter('template_id', i) as number;
+	const language = this.getNodeParameter('lang', i) as string;
+	const templateType = this.getNodeParameter('template_type', i) as string;
 
-	const variablesCollection = this.getNodeParameter(
-		'variables.variableValues',
-		i,
-		[],
-	) as IDataObject[];
-	const variables = parseVariables(variablesCollection);
+	// Get variables
+	const variablesData = this.getNodeParameter('variables.variableValues', i, []) as IDataObject[];
+	const variables = parseVariables(variablesData);
+
+	// Get optional overrides
+	const overrides = this.getNodeParameter('overrides', i, {}) as IDataObject;
+	const avatarType = overrides.avatar_type as number;
+	const avatarId = overrides.avatar_id as number;
+	const voiceId = overrides.voice_id as string;
+	const caption = overrides.caption as boolean;
+	const musicId = overrides.music_id as number;
 
 	const body = {
 		template_id: templateId,
@@ -269,17 +284,13 @@ export async function executeCreateVideoFromTemplateOperation(
 
 function parseVariables(variablesCollection: IDataObject[]) {
 	return variablesCollection.map((variable: IDataObject) => {
-		const properties = variable.properties as IDataObject;
-		const propertiesValues =
-			properties && properties.values ? (properties.values as IDataObject) : {};
-
 		return {
 			type: variable.type as string,
 			name: variable.name as string,
 			properties: {
-				content: (propertiesValues.content as string) || '',
-				url: (propertiesValues.url as string) || '',
-				asset_id: (propertiesValues.assetId as number) || 0,
+				content: ((variable.properties as IDataObject)?.content as string) || '',
+				url: ((variable.properties as IDataObject)?.url as string) || '',
+				asset_id: ((variable.properties as IDataObject)?.asset_id as number) || 0,
 			},
 		};
 	});

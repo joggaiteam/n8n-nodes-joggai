@@ -17,89 +17,69 @@ import { sceneOptions } from '../../../const/scene';
 
 export const getAvatarListFromLibraryProperties: INodeProperties[] = [
 	{
-		displayName: 'Aspect Ratio',
-		description: 'Screen aspect ratio',
-		name: 'aspectRatio',
-		type: 'options',
-		default: 0,
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		description: 'Filter the list of avatars by specific criteria',
 		displayOptions: {
 			show: {
 				resource: [AVATAR_RESOURCE.value],
 				operation: [AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value],
 			},
 		},
-		options: talkingAvatarAspectRatioOptions,
-	},
-	{
-		displayName: 'Style',
-		description: 'Avatar style',
-		name: 'style',
-		type: 'options',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value],
+		// eslint-disable-next-line n8n-nodes-base/node-param-collection-type-unsorted-items
+		options: [
+			{
+				displayName: 'Aspect Ratio',
+				name: 'aspect_ratio',
+				type: 'options',
+				options: talkingAvatarAspectRatioOptions,
+				default: 0,
+				description: 'Filter by screen aspect ratio',
 			},
-		},
-		options: [notSelectOption, ...avatarStyle2Options],
-	},
-	{
-		displayName: 'Gender',
-		description: 'Avatar gender',
-		name: 'gender',
-		type: 'options',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value],
+			{
+				displayName: 'Style',
+				name: 'style',
+				type: 'options',
+				options: [notSelectOption, ...avatarStyle2Options],
+				default: '',
+				description: 'Filter by avatar style',
 			},
-		},
-		options: [notSelectOption, ...genderOptions],
-	},
-
-	{
-		displayName: 'Age',
-		description: 'Avatar age',
-		name: 'age',
-		type: 'options',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value],
+			{
+				displayName: 'Gender',
+				name: 'gender',
+				type: 'options',
+				options: [notSelectOption, ...genderOptions],
+				default: '',
+				description: 'Filter by avatar gender',
 			},
-		},
-		options: [notSelectOption, ...avatarAgeOptions],
-	},
-	{
-		displayName: 'Scene',
-		description: 'Avatar scene',
-		name: 'scene',
-		type: 'options',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value],
+			{
+				displayName: 'Age',
+				name: 'age',
+				type: 'options',
+				options: [notSelectOption, ...avatarAgeOptions],
+				default: '',
+				description: 'Filter by avatar age',
 			},
-		},
-		options: [notSelectOption, ...sceneOptions],
-	},
-	{
-		displayName: 'Ethnicity',
-		description: 'Avatar ethnicity',
-		name: 'ethnicity',
-		type: 'options',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: [AVATAR_RESOURCE.value],
-				operation: [AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value],
+			{
+				displayName: 'Scene',
+				name: 'scene',
+				type: 'options',
+				options: [notSelectOption, ...sceneOptions],
+				default: '',
+				description: 'Filter by avatar scene',
 			},
-		},
-		options: [notSelectOption, ...ethnicity2Options],
+			{
+				displayName: 'Ethnicity',
+				name: 'ethnicity',
+				type: 'options',
+				options: [notSelectOption, ...ethnicity2Options],
+				default: '',
+				description: 'Filter by avatar ethnicity',
+			},
+		],
 	},
 ];
 
@@ -111,12 +91,14 @@ export async function executeGetAvatarListFromLibraryOperation(
 
 	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
-	const style = this.getNodeParameter('style', i, '') as string;
-	const gender = this.getNodeParameter('gender', i, '') as string;
-	const aspectRatio = this.getNodeParameter('aspectRatio', i, -1) as number;
-	const age = this.getNodeParameter('age', i, '') as string;
-	const scene = this.getNodeParameter('scene', i, '') as string;
-	const ethnicity = this.getNodeParameter('ethnicity', i, '') as string;
+	const filters = this.getNodeParameter('filters', i, {}) as IDataObject;
+
+	const style = (filters.style as string) || '';
+	const gender = (filters.gender as string) || '';
+	const aspectRatio = (filters.aspect_ratio as number) || 0;
+	const age = (filters.age as string) || '';
+	const scene = (filters.scene as string) || '';
+	const ethnicity = (filters.ethnicity as string) || '';
 
 	const qs: IDataObject = {
 		style: style,

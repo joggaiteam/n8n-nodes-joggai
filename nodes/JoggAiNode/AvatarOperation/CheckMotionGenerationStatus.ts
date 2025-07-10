@@ -9,17 +9,19 @@ import { AVATAR_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode
 
 export const checkMotionStatusProperties: INodeProperties[] = [
 	{
-		displayName: 'Motion ID',
-		name: 'motionId',
+		displayName: 'Avatar ID',
+		name: 'motion_id',
 		type: 'string',
+		required: true,
 		default: '',
+		description: 'The ID of the avatar generation task to check',
+		placeholder: 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6',
 		displayOptions: {
 			show: {
 				resource: [AVATAR_RESOURCE.value],
 				operation: [AVATAR_RESOURCE.operation.CHECK_PHOTO_AVATAR_STATUS.value],
 			},
 		},
-		required: true,
 	},
 ];
 
@@ -29,7 +31,7 @@ export async function executeCheckMotionStatusOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const motionId = this.getNodeParameter('motionId', i) as string;
+	const motionId = this.getNodeParameter('motion_id', i) as string;
 
 	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 

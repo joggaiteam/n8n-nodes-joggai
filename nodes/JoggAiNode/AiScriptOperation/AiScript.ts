@@ -6,7 +6,6 @@ import {
 } from 'n8n-workflow';
 
 import { languageOptions } from '../../../const/language';
-import { videoLengthOptions } from '../../../const/videoLength';
 
 import { AI_SCRIPT_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
@@ -15,8 +14,9 @@ export const aiScriptProperties: INodeProperties[] = [
 		displayName: 'Language',
 		name: 'language',
 		type: 'options',
+		required: true,
 		default: 'english',
-		description: 'Script generation language',
+		description: 'The language for script generation',
 		options: languageOptions,
 		displayOptions: {
 			show: {
@@ -24,67 +24,116 @@ export const aiScriptProperties: INodeProperties[] = [
 				operation: [AI_SCRIPT_RESOURCE.operation.GENERATE.value],
 			},
 		},
-		required: true,
+	},
+	{
+		displayName: 'Product Source',
+		name: 'productSource',
+		type: 'options',
+		noDataExpression: true,
+		options: [
+			{
+				name: 'By Product ID',
+				value: 'productId',
+				description: 'Use an existing product ID',
+			},
+			{
+				name: 'By Manual Details',
+				value: 'manual',
+				description: 'Enter product details manually',
+			},
+		],
+		default: 'productId',
+		description: 'Choose the source of the product information',
+		displayOptions: {
+			show: {
+				resource: [AI_SCRIPT_RESOURCE.value],
+				operation: [AI_SCRIPT_RESOURCE.operation.GENERATE.value],
+			},
+		},
 	},
 	{
 		displayName: 'Product ID',
-		name: 'productId',
+		name: 'product_id',
 		type: 'string',
 		default: '',
-		description:
-			'Simply provide the product information or the product_id generated at the "Upload URL to Create Product" endpoint, and you can create several different styles of product introduction scripts',
+		placeholder: 'NTQ0MTkzNjg',
+		description: 'The ID of a product previously created',
 		displayOptions: {
 			show: {
 				resource: [AI_SCRIPT_RESOURCE.value],
 				operation: [AI_SCRIPT_RESOURCE.operation.GENERATE.value],
+				productSource: ['productId'],
 			},
 		},
 	},
 	{
-		displayName: 'Name',
+		displayName: 'Product Name',
 		name: 'name',
 		type: 'string',
+		required: true,
 		default: '',
-		description: 'Product name',
+		description: 'The name of the product. Required if Product ID is not provided.',
 		displayOptions: {
 			show: {
 				resource: [AI_SCRIPT_RESOURCE.value],
 				operation: [AI_SCRIPT_RESOURCE.operation.GENERATE.value],
+				productSource: ['manual'],
 			},
 		},
 	},
 	{
-		displayName: 'Description',
+		displayName: 'Product Description',
 		name: 'description',
 		type: 'string',
+		typeOptions: {
+			multiline: true,
+		},
+		required: true,
 		default: '',
-		description: 'Product introduction and selling points',
+		description: 'Product introduction and selling points. Required if Product ID is not provided.',
 		displayOptions: {
 			show: {
 				resource: [AI_SCRIPT_RESOURCE.value],
 				operation: [AI_SCRIPT_RESOURCE.operation.GENERATE.value],
+				productSource: ['manual'],
 			},
 		},
 	},
 	{
 		displayName: 'Target Audience',
-		name: 'targetAudience',
+		name: 'target_audience',
 		type: 'string',
 		default: '',
-		description: 'Target audience for the product',
+		placeholder: 'e.g., Tech-savvy millennials',
+		description: 'The target audience for the product',
 		displayOptions: {
 			show: {
 				resource: [AI_SCRIPT_RESOURCE.value],
 				operation: [AI_SCRIPT_RESOURCE.operation.GENERATE.value],
+				productSource: ['manual'],
 			},
 		},
 	},
 	{
 		displayName: 'Video Length',
-		name: 'videoLength',
+		name: 'video_length',
 		type: 'options',
+		options: [
+			{
+				name: '15 Seconds',
+				value: '15',
+			},
+			{
+				name: '30 Seconds',
+				value: '30',
+			},
+			{
+				name: '60 Seconds',
+				value: '60',
+			},
+		],
 		default: '15',
-		options: videoLengthOptions,
+		description: 'Optional. The target length for the generated scripts.',
 		displayOptions: {
 			show: {
 				resource: [AI_SCRIPT_RESOURCE.value],
@@ -100,12 +149,22 @@ export async function executeAiScriptOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const productId = this.getNodeParameter('productId', i) as string;
+	const productSource = this.getNodeParameter('productSource', i) as string;
 	const language = this.getNodeParameter('language', i) as string;
-	const name = this.getNodeParameter('name', i) as string;
-	const description = this.getNodeParameter('description', i) as string;
-	const targetAudience = this.getNodeParameter('targetAudience', i) as string;
-	const videoLength = this.getNodeParameter('videoLength', i) as string;
+	const videoLength = this.getNodeParameter('video_length', i) as string;
+
+	let productId = '';
+	let name = '';
+	let description = '';
+	let targetAudience = '';
+
+	if (productSource === 'productId') {
+		productId = this.getNodeParameter('product_id', i) as string;
+	} else {
+		name = this.getNodeParameter('name', i) as string;
+		description = this.getNodeParameter('description', i) as string;
+		targetAudience = this.getNodeParameter('target_audience', i) as string;
+	}
 
 	const body = {
 		product_id: productId,

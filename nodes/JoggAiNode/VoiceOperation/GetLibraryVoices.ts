@@ -15,14 +15,38 @@ import { genderOptions } from '../../../const/gender';
 
 export const getLibraryVoicesProperties: INodeProperties[] = [
 	{
-		displayName: 'Page',
-		name: 'page',
-		type: 'number',
-		typeOptions: {
-			minValue: 1,
-		},
-		default: 1,
-		description: 'Page number',
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		description: 'Filter the list of voices by specific criteria',
+		options: [
+			{
+				displayName: 'Age',
+				name: 'age',
+				type: 'options',
+				options: [notSelectOption, ...ageOptions],
+				default: '',
+				description: 'Filter voices by age',
+			},
+			{
+				displayName: 'Gender',
+				name: 'gender',
+				type: 'options',
+				options: [notSelectOption, ...genderOptions],
+				default: '',
+				description: 'Filter voices by gender',
+			},
+			{
+				displayName: 'Language',
+				name: 'language',
+				type: 'options',
+				options: [notSelectOption, ...languageOptions],
+				default: '',
+				description: 'Filter voices by language',
+			},
+		],
 		displayOptions: {
 			show: {
 				resource: [VOICE_RESOURCE.value],
@@ -31,56 +55,34 @@ export const getLibraryVoicesProperties: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Page Size',
-		name: 'pageSize',
-		type: 'number',
-		typeOptions: {
-			minValue: 1,
-		},
-		default: 10,
-		displayOptions: {
-			show: {
-				resource: [VOICE_RESOURCE.value],
-				operation: [VOICE_RESOURCE.operation.GET_LIBRARY_VOICES.value],
+		displayName: 'Pagination',
+		name: 'pagination',
+		type: 'collection',
+		placeholder: 'Add Pagination Options',
+		default: {},
+		description: 'Set the page and number of results to return',
+		options: [
+			{
+				displayName: 'Page',
+				name: 'page',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 1,
+				description: 'The page number to retrieve',
 			},
-		},
-	},
-
-	{
-		displayName: 'Age',
-		name: 'age',
-		type: 'options',
-		options: [notSelectOption, ...ageOptions],
-		default: '',
-		description: 'Filter voices by age',
-		displayOptions: {
-			show: {
-				resource: [VOICE_RESOURCE.value],
-				operation: [VOICE_RESOURCE.operation.GET_LIBRARY_VOICES.value],
+			{
+				displayName: 'Page Size',
+				name: 'page_size',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 10,
+				description: 'The number of results to return per page',
 			},
-		},
-	},
-	{
-		displayName: 'Gender',
-		name: 'gender',
-		type: 'options',
-		options: [notSelectOption, ...genderOptions],
-		default: '',
-		description: 'Filter voices by gender',
-		displayOptions: {
-			show: {
-				resource: [VOICE_RESOURCE.value],
-				operation: [VOICE_RESOURCE.operation.GET_LIBRARY_VOICES.value],
-			},
-		},
-	},
-	{
-		displayName: 'Language',
-		name: 'language',
-		type: 'options',
-		options: [notSelectOption, ...languageOptions],
-		default: '',
-		description: 'Filter voices by language',
+		],
 		displayOptions: {
 			show: {
 				resource: [VOICE_RESOURCE.value],
@@ -98,11 +100,15 @@ export async function executeGetLibraryVoicesOperation(
 
 	let endpoint = `/v1/voices`;
 
-	const language = this.getNodeParameter('language', i) as string;
-	const page = this.getNodeParameter('page', i) as number;
-	const pageSize = this.getNodeParameter('pageSize', i) as number;
-	const age = this.getNodeParameter('age', i) as string;
-	const gender = this.getNodeParameter('gender', i) as string;
+	const filters = this.getNodeParameter('filters', i, {}) as IDataObject;
+	const pagination = this.getNodeParameter('pagination', i, {}) as IDataObject;
+
+	const language = (filters.language as string) || '';
+	const age = (filters.age as string) || '';
+	const gender = (filters.gender as string) || '';
+
+	const page = (pagination.page as number) || 1;
+	const pageSize = (pagination.page_size as number) || 10;
 
 	const qs: IDataObject = {
 		language: language,

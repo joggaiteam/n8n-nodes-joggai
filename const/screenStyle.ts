@@ -8,7 +8,7 @@ export const screenStyleOptions = [
 		value: 2,
 	},
 	{
-		name: 'WebM',
+		name: 'WebM (Transparent Background)',
 		value: 3,
 	},
 ];

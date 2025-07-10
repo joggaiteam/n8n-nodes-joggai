@@ -8,15 +8,26 @@ import {
 
 import { PRODUCT_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
-import { mediaTypeOptions } from '../../../const/mediaType';
-
 export const uploadUrlCreateProductProperties: INodeProperties[] = [
 	{
-		displayName: 'URL',
-		name: 'url',
-		type: 'string',
-		default: '',
-		description: 'URL of the product to crawl',
+		displayName: 'Creation Method',
+		name: 'creationMethod',
+		type: 'options',
+		noDataExpression: true,
+		options: [
+			{
+				name: 'From URL',
+				value: 'url',
+				description: 'Crawl a URL to get product information',
+			},
+			{
+				name: 'Manual Entry',
+				value: 'manual',
+				description: 'Provide product information manually',
+			},
+		],
+		default: 'url',
+		description: 'Choose how to provide the product information',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
@@ -24,94 +35,133 @@ export const uploadUrlCreateProductProperties: INodeProperties[] = [
 			},
 		},
 	},
+
+	// ----------------------------------
+	//         Create from URL
+	// ----------------------------------
 	{
-		displayName: 'Name',
-		name: 'name',
+		displayName: 'Product URL',
+		name: 'url',
 		type: 'string',
 		default: '',
-		description: 'Product name',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
 				operation: [PRODUCT_RESOURCE.operation.UPLOAD_PRODUCT.value],
+				creationMethod: ['url'],
 			},
 		},
+		placeholder: 'https://example.com/product_page',
+		description: 'URL of the product page to crawl for information',
+	},
+
+	// ----------------------------------
+	//         Manual Entry
+	// ----------------------------------
+	{
+		displayName: 'Product Name',
+		name: 'name',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: [PRODUCT_RESOURCE.value],
+				operation: [PRODUCT_RESOURCE.operation.UPLOAD_PRODUCT.value],
+				creationMethod: ['manual'],
+			},
+		},
+		description: 'The name of the product',
 	},
 	{
 		displayName: 'Description',
 		name: 'description',
 		type: 'string',
+		typeOptions: {
+			multiline: true,
+		},
 		default: '',
-		description: 'Product introduction and selling points',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
 				operation: [PRODUCT_RESOURCE.operation.UPLOAD_PRODUCT.value],
+				creationMethod: ['manual'],
 			},
 		},
+		description: 'Product introduction and selling points',
 	},
 	{
 		displayName: 'Target Audience',
-		name: 'targetAudience',
+		name: 'target_audience',
 		type: 'string',
 		default: '',
-		description: 'Target audience for the product',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
 				operation: [PRODUCT_RESOURCE.operation.UPLOAD_PRODUCT.value],
+				creationMethod: ['manual'],
 			},
 		},
+		placeholder: 'e.g., Tech-savvy millennials',
+		description: 'The target audience for the product',
 	},
 	{
 		displayName: 'Media',
 		name: 'media',
-		placeholder: 'Add Media',
 		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-		default: {},
-		description: 'Media resources array',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
 				operation: [PRODUCT_RESOURCE.operation.UPLOAD_PRODUCT.value],
+				creationMethod: ['manual'],
 			},
 		},
+		placeholder: 'Add Media',
+		default: {},
+		typeOptions: {
+			multipleValues: true,
+		},
+		description: 'Media resources like images or videos',
 		options: [
 			{
-				name: 'mediaValues',
-				displayName: 'Media',
+				name: 'mediaItem',
+				displayName: 'Media Item',
 				values: [
 					{
 						displayName: 'Type',
 						name: 'type',
 						type: 'options',
+						required: true,
+						options: [
+							{ name: 'Image', value: 1 },
+							{ name: 'Video', value: 2 },
+						],
 						default: 1,
-						description: 'The type of media',
-						options: mediaTypeOptions,
+						description: 'The type of the media asset',
 					},
 					{
 						displayName: 'Name',
 						name: 'name',
 						type: 'string',
 						default: '',
-						description: 'Media name',
+						placeholder: 'product_front.jpg',
+						description: 'The name of the media file',
 					},
 					{
 						displayName: 'URL',
 						name: 'url',
 						type: 'string',
+						required: true,
 						default: '',
-						description: 'Media URL',
+						placeholder: 'https://example.com/image.jpg',
+						description: 'A public URL for the media asset',
 					},
 					{
 						displayName: 'Description',
 						name: 'description',
 						type: 'string',
 						default: '',
-						description: 'Media description',
+						placeholder: 'A front view of the product.',
+						description: 'A brief description of the media',
 					},
 				],
 			},
@@ -128,9 +178,9 @@ export async function executeUploadUrlCreateProductOperation(
 	const url = this.getNodeParameter('url', i) as string;
 	const name = this.getNodeParameter('name', i, '') as string;
 	const description = this.getNodeParameter('description', i, '') as string;
-	const targetAudience = this.getNodeParameter('targetAudience', i, '') as string;
+	const targetAudience = this.getNodeParameter('target_audience', i, '') as string;
 
-	const mediaCollection = this.getNodeParameter('media.mediaValues', i, []) as IDataObject[];
+	const mediaCollection = this.getNodeParameter('media.mediaItem', i, []) as IDataObject[];
 	const media = mediaCollection.map((item: IDataObject) => {
 		return {
 			type: item.type as number,

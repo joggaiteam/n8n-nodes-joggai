@@ -10,29 +10,34 @@ import { VIDEO_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2
 
 import { screenStyleOptions } from '../../../const/screenStyle';
 import { talkingAvatarTypeOptions } from '../../../const/avatarType';
-import { talkingAvatarAspectRatioOptions } from '../../../const/aspectRatio';
+import { productVideoAspectRatioOptions } from '../../../const/aspectRatio';
 
 export const createTalkingAvatarProperties: INodeProperties[] = [
+	// ----------------------------------
+	//         Required Fields
+	// ----------------------------------
 	{
-		displayName: 'Screen Style',
-		name: 'screenStyle',
+		displayName: 'Avatar Type',
+		name: 'avatar_type',
 		type: 'options',
-		default: 1,
-		options: screenStyleOptions,
-		description: 'Background style',
+		required: true,
+		options: talkingAvatarTypeOptions,
+		default: 0,
+		description: 'Source type of the avatar',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
 			},
 		},
-		required: true,
 	},
 	{
 		displayName: 'Avatar ID',
-		name: 'avatarId',
+		name: 'avatar_id',
 		type: 'number',
-		default: 0,
+		required: true,
+		default: '',
+		placeholder: '405',
 		description: 'ID of the avatar to use',
 		displayOptions: {
 			show: {
@@ -40,105 +45,133 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
 			},
 		},
-		required: true,
-	},
-	{
-		displayName: 'Avatar Type',
-		name: 'avatarType',
-		type: 'options',
-		default: 0,
-		description: 'Source type of the avatar',
-		options: talkingAvatarTypeOptions,
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
-			},
-		},
-		required: true,
 	},
 	{
 		displayName: 'Voice ID',
-		name: 'voiceId',
+		name: 'voice_id',
 		type: 'string',
-		default: '',
-		description: 'ID of the text-to-speech voice to use',
+		required: true,
+		default: 'tb_e63bb35b3c2445809f8ee3d5c5bd1197',
+		placeholder: 'tb_e63bb35b3c2445809f8ee3d5c5bd1197',
+		description: 'ID of the text-to-speech (TTS) voice to use',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
 			},
 		},
+	},
+	{
+		displayName: 'Screen Style',
+		name: 'screen_style',
+		type: 'options',
 		required: true,
+		options: screenStyleOptions,
+		default: 1,
+		description: 'Background style for the output video',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
+			},
+		},
+	},
+
+	// ----------------------------------
+	//  Script/Audio Source (Mutually Exclusive)(Required)
+	// ----------------------------------
+	{
+		displayName: 'Audio Source',
+		name: 'audioSource',
+		type: 'options',
+		noDataExpression: true,
+		options: [
+			{
+				name: 'Text Script',
+				value: 'script',
+			},
+			{
+				name: 'Audio File URL',
+				value: 'audio_url',
+			},
+		],
+		default: 'script',
+		description: 'Choose to provide a text script for the AI to speak, or a direct URL to an audio file',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
+			},
+		},
 	},
 	{
 		displayName: 'Script',
 		name: 'script',
 		type: 'string',
 		default: '',
-		description:
-			'Script content for the avatar to speak. Must provide either script or audio_script.',
+		description: 'Script content for the avatar to speak',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
+				audioSource: ['script'],
 			},
 		},
 	},
 	{
 		displayName: 'Audio URL',
-		name: 'audioUrl',
+		name: 'audio_url',
 		type: 'string',
 		default: '',
-		description: 'URL for Audio, either script or audio_url must be provided, but not both',
+		description: 'URL for the audio file that the avatar will lip-sync to',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
+				audioSource: ['audio_url'],
 			},
 		},
 	},
+	// ----------------------------------
+	//         Additional Options
+	// ----------------------------------
 	{
-		displayName: 'Aspect Ratio',
-		name: 'aspectRatio',
-		type: 'options',
-		options: talkingAvatarAspectRatioOptions,
-		default: 0,
-		description: 'Aspect ratio of the output video',
+		displayName: 'Additional Options',
+		name: 'additionalOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
 			},
 		},
-	},
-	{
-		displayName: 'Caption',
-		name: 'caption',
-		type: 'boolean',
-		default: false,
-		// eslint-disable-next-line n8n-nodes-base/node-param-description-boolean-without-whether
-		description: 'Subtitle option',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
+		options: [
+			{
+				displayName: 'Aspect Ratio',
+				name: 'aspect_ratio',
+				type: 'options',
+				options: productVideoAspectRatioOptions,
+				default: 0,
+				description: 'Aspect ratio of the output video',
 			},
-		},
-	},
-	{
-		displayName: 'Video Name',
-		name: 'videoName',
-		type: 'string',
-		default: '',
-		description:
-			'If you want to specify the name of the generated video, please use this parameter',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_AVATAR.value],
+			{
+				displayName: 'Enable Caption',
+				name: 'caption',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to generate and display captions in the video',
 			},
-		},
+			{
+				displayName: 'Video Name',
+				name: 'video_name',
+				type: 'string',
+				default: '',
+				placeholder: 'My First Avatar Video',
+				description: 'Specify a name for the generated video file',
+			},
+		],
 	},
 ];
 
@@ -148,15 +181,25 @@ export async function executeCreateTalkingAvatarOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const script = this.getNodeParameter('script', i) as string;
-	const audioUrl = this.getNodeParameter('audioUrl', i, '') as string;
-	const aspectRatio = this.getNodeParameter('aspectRatio', i) as number;
-	const screenStyle = this.getNodeParameter('screenStyle', i) as number;
-	const avatarId = this.getNodeParameter('avatarId', i) as number;
-	const avatarType = this.getNodeParameter('avatarType', i) as number;
-	const voiceId = this.getNodeParameter('voiceId', i) as string;
-	const caption = this.getNodeParameter('caption', i) as boolean;
-	const videoName = this.getNodeParameter('videoName', i, 'My Video') as string;
+	const audioSource = this.getNodeParameter('audioSource', i) as string;
+	let script = '';
+	let audioUrl = '';
+
+	if (audioSource === 'script') {
+		script = this.getNodeParameter('script', i) as string;
+	} else {
+		audioUrl = this.getNodeParameter('audio_url', i) as string;
+	}
+
+	const avatarId = this.getNodeParameter('avatar_id', i) as number;
+	const avatarType = this.getNodeParameter('avatar_type', i) as number;
+	const voiceId = this.getNodeParameter('voice_id', i) as string;
+	const screenStyle = this.getNodeParameter('screen_style', i) as number;
+
+	const additionalOptions = this.getNodeParameter('additionalOptions', i) as IDataObject;
+	const aspectRatio = (additionalOptions.aspect_ratio as number) || 0;
+	const caption = (additionalOptions.caption as boolean) || false;
+	const videoName = (additionalOptions.video_name as string) || 'My Video';
 
 	const body: IDataObject = {
 		avatar_id: avatarId,

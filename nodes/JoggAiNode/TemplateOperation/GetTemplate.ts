@@ -8,14 +8,12 @@ import {
 
 import { TEMPLATE_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
-import { aspectRatioOptions } from '../../../const/aspectRatio';
-
 export const getLibraryTemplateProperties: INodeProperties[] = [
 	{
 		displayName: 'Aspect Ratio',
-		description: 'Screen aspect ratio',
-		name: 'aspectRatio',
+		name: 'aspect_ratio',
 		type: 'options',
+		description: 'Optional. Filter the list of templates by aspect ratio.',
 		default: -1,
 		displayOptions: {
 			show: {
@@ -23,7 +21,24 @@ export const getLibraryTemplateProperties: INodeProperties[] = [
 				operation: [TEMPLATE_RESOURCE.operation.GET_LIBRARY_TEMPLATES.value],
 			},
 		},
-		options: aspectRatioOptions,
+		options: [
+			{
+				name: 'All',
+				value: -1,
+			},
+			{
+				name: 'Portrait (9:16)',
+				value: 0,
+			},
+			{
+				name: 'Landscape (16:9)',
+				value: 1,
+			},
+			{
+				name: 'Square (1:1)',
+				value: 2,
+			},
+		],
 	},
 ];
 
@@ -35,7 +50,7 @@ export async function executeGetLibraryTemplateOperation(
 
 	let endpoint = `/v1/templates`;
 
-	const aspectRatio = this.getNodeParameter('aspectRatio', i) as string;
+	const aspectRatio = this.getNodeParameter('aspect_ratio', i) as string;
 	const qs: IDataObject = {
 		aspect_ratio: aspectRatio,
 	};

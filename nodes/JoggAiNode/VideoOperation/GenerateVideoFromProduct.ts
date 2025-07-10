@@ -16,13 +16,17 @@ import { productVideoAspectRatioOptions } from '../../../const/aspectRatio';
 import { videoLengthOptions } from '../../../const/videoLength';
 
 export const generateVideoFromProductInformationProperties: INodeProperties[] = [
+	// ----------------------------------
+	//         Primary Required Fields
+	// ----------------------------------
 	{
 		displayName: 'Product ID',
 		name: 'productId',
 		type: 'string',
-		default: '',
-		description: 'Product ID obtained from Step 1 (POST /product) response data.product_id',
 		required: true,
+		default: '',
+		description: 'Product ID obtained from the "Create Product" step',
+		placeholder: 'NTIzMzc0NjI5',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -37,7 +41,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		options: productVideoAspectRatioOptions,
 		default: 0,
 		required: true,
-		description: 'Video aspect ratio',
+		description: 'The aspect ratio of the final video',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -52,6 +56,22 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		options: videoLengthOptions,
 		default: '15',
 		required: true,
+		description: 'The target duration of the video',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
+			},
+		},
+	},
+	// ----------------------------------
+	//         Content & Script
+	// ----------------------------------
+	{
+		displayName: 'Content & Script',
+		name: 'contentNotice',
+		type: 'notice',
+		default: 'Define the language and writing style for the video script.',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -64,7 +84,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'language',
 		type: 'options',
 		default: 'english',
-		description: 'Script generation language',
+		description: 'The language for script generation',
 		required: true,
 		options: languageOptions,
 		displayOptions: {
@@ -75,12 +95,28 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		},
 	},
 	{
-		displayName: 'Avatar ID',
-		name: 'avatarId',
-		type: 'number',
-		default: 0,
+		displayName: 'Script Style',
+		name: 'scriptStyle',
+		type: 'options',
+		default: 'Soft Selling',
+		description: 'The writing style for the video content',
 		required: true,
-		description: 'Avatar ID from Jogg Avatar or Your Avatar',
+		options: scriptStyleOptions,
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
+			},
+		},
+	},
+	// ----------------------------------
+	//         Avatar
+	// ----------------------------------
+	{
+		displayName: 'Avatar',
+		name: 'avatarNotice',
+		type: 'notice',
+		default: 'Choose the avatar that will present the video.',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -95,7 +131,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		default: 0,
 		type: 'options',
 		options: avatarTypeOptions,
-		description: 'Avatar source type',
+		description: 'The source of the avatar to be used',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -104,13 +140,27 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		},
 	},
 	{
-		displayName: 'Script Style',
-		name: 'scriptStyle',
-		type: 'options',
-		default: "Don't Worry",
-		description: 'Script writing style for video content',
+		displayName: 'Avatar ID',
+		name: 'avatarId',
+		type: 'number',
+		default: 1,
 		required: true,
-		options: scriptStyleOptions,
+		description: 'The ID of the chosen avatar',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
+			},
+		},
+	},
+	// ----------------------------------
+	//         Styling & Template
+	// ----------------------------------
+	{
+		displayName: 'Styling & Template',
+		name: 'stylingNotice',
+		type: 'notice',
+		default: 'Configure the visual and audio elements of the video.',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -125,7 +175,7 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		type: 'options',
 		options: productVideoTemplateTypeOptions,
 		required: true,
-		description: 'Template source type',
+		description: 'The source of the template',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -134,24 +184,13 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		},
 	},
 	{
-		displayName: 'Voice ID',
-		name: 'voiceId',
-		type: 'string',
-		default: '',
-		description: 'Voice ID from voice list',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
-			},
-		},
-	},
-	{
-		displayName: 'Music ID',
-		name: 'musicId',
+		displayName: 'Template ID',
+		name: 'templateId',
 		type: 'number',
-		default: 0,
-		description: 'Music ID from music list',
+		default: '',
+		placeholder: '123',
+		required: true,
+		description: 'The ID from the selected template library',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -164,7 +203,8 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'visualStyle',
 		type: 'string',
 		default: '',
-		description: 'Visual style of the video from visual list(GET /visual)',
+		placeholder: 'Simple Product Switch',
+		description: 'Visual style from the visual list (GET /visual)',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -173,11 +213,11 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		},
 	},
 	{
-		displayName: 'Template ID',
-		name: 'templateId',
-		type: 'number',
-		default: 0,
-		description: 'Template ID from template library or custom template',
+		displayName: 'Voice ID',
+		name: 'voiceId',
+		type: 'string',
+		default: 'en-US-ChristopherNeural',
+		description: 'The ID of the voice to use',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -185,27 +225,44 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 			},
 		},
 	},
-
+	{
+		displayName: 'Music ID',
+		name: 'musicId',
+		type: 'number',
+		default: '',
+		placeholder: '13',
+		description: 'The ID of the background music',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
+			},
+		},
+	},
+	// ----------------------------------
+	//         Overrides & Output
+	// ----------------------------------
+	{
+		displayName: 'Overrides & Output',
+		name: 'overridesNotice',
+		type: 'notice',
+		default: 'Optionally override the script and set final output details.',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
+			},
+		},
+	},
 	{
 		displayName: 'Override Script',
 		name: 'overrideScript',
 		type: 'string',
-		default: '',
-		description: 'You can enter the script you want to use here to override the existing script',
-		displayOptions: {
-			show: {
-				resource: [VIDEO_RESOURCE.value],
-				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
-			},
+		typeOptions: {
+			multiline: true,
 		},
-	},
-	{
-		displayName: 'Captions',
-		name: 'caption',
-		type: 'boolean',
-		default: false,
-		// eslint-disable-next-line n8n-nodes-base/node-param-description-boolean-without-whether
-		description: 'Controls subtitle rendering',
+		default: '',
+		description: 'Enter a script here to override the one generated by the selected Script Style',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -218,8 +275,21 @@ export const generateVideoFromProductInformationProperties: INodeProperties[] = 
 		name: 'videoName',
 		type: 'string',
 		default: '',
-		description:
-			'If you want to specify the name of the generated video, please use this parameter',
+		placeholder: 'My New Product Video',
+		description: 'Specify a custom name for the generated video',
+		displayOptions: {
+			show: {
+				resource: [VIDEO_RESOURCE.value],
+				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_PRODUCT.value],
+			},
+		},
+	},
+	{
+		displayName: 'Show Captions',
+		name: 'caption',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to render subtitles on the video',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],

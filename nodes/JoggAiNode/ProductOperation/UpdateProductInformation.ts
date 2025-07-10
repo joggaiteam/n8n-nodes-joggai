@@ -8,29 +8,15 @@ import {
 
 import { PRODUCT_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
-import { mediaTypeOptions } from '../../../const/mediaType';
-
 export const updateProductInformationProperties: INodeProperties[] = [
 	{
 		displayName: 'Product ID',
-		name: 'productId',
+		name: 'product_id',
 		type: 'string',
-		default: '',
-		description: 'Product ID obtained from Step 1 (POST /open/product) response data.ID',
 		required: true,
-		displayOptions: {
-			show: {
-				resource: [PRODUCT_RESOURCE.value],
-				operation: [PRODUCT_RESOURCE.operation.UPDATE_PRODUCT.value],
-			},
-		},
-	},
-	{
-		displayName: 'Name',
-		name: 'name',
-		type: 'string',
 		default: '',
-		description: 'Product name',
+		description: 'The ID of the product to update, obtained from the "Create Product" step',
+		placeholder: '3924',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
@@ -39,41 +25,12 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		description: 'Product introduction and selling points',
-		displayOptions: {
-			show: {
-				resource: [PRODUCT_RESOURCE.value],
-				operation: [PRODUCT_RESOURCE.operation.UPDATE_PRODUCT.value],
-			},
-		},
-	},
-	{
-		displayName: 'Target Audience',
-		name: 'targetAudience',
-		type: 'string',
-		default: '',
-		description: 'Target audience for the product',
-		displayOptions: {
-			show: {
-				resource: [PRODUCT_RESOURCE.value],
-				operation: [PRODUCT_RESOURCE.operation.UPDATE_PRODUCT.value],
-			},
-		},
-	},
-	{
-		displayName: 'Media',
-		name: 'media',
-		placeholder: 'Add Media',
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
+		displayName: 'Update Fields',
+		name: 'updates',
+		type: 'collection',
+		placeholder: 'Add Field to Update',
 		default: {},
-		description: 'Media resources array (will replace existing media if provided)',
+		description: 'Select the product fields you want to update. Any fields added here will overwrite existing data.',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
@@ -82,37 +39,84 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'mediaValues',
+				displayName: 'Product Name',
+				name: 'name',
+				type: 'string',
+				default: '',
+				description: 'Update the name of the product',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				typeOptions: {
+					multiline: true,
+				},
+				default: '',
+				description: 'Update the product introduction and selling points',
+			},
+			{
+				displayName: 'Target Audience',
+				name: 'target_audience',
+				type: 'string',
+				default: '',
+				placeholder: 'e.g., Tech-savvy millennials',
+				description: 'Update the target audience for the product',
+			},
+			{
 				displayName: 'Media',
-				values: [
+				name: 'media',
+				type: 'fixedCollection',
+				placeholder: 'Add Media Item',
+				default: {},
+				typeOptions: {
+					multipleValues: true,
+				},
+				description:
+					'A new list of media assets. This will replace all existing media for the product.',
+				options: [
 					{
-						displayName: 'Type',
-						name: 'type',
-						type: 'options',
-						default: 1,
-						description: 'Media type',
-						options: mediaTypeOptions,
-					},
-					{
-						displayName: 'Name',
-						name: 'name',
-						type: 'string',
-						default: '',
-						description: 'Media name',
-					},
-					{
-						displayName: 'URL',
-						name: 'url',
-						type: 'string',
-						default: '',
-						description: 'Media URL',
-					},
-					{
-						displayName: 'Description',
-						name: 'description',
-						type: 'string',
-						default: '',
-						description: 'Media description',
+						name: 'mediaItem',
+						displayName: 'Media Item',
+						values: [
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								required: true,
+								options: [
+									{ name: 'Image', value: 1 },
+									{ name: 'Video', value: 2 },
+								],
+								default: 1,
+								description: 'The type of the media asset',
+							},
+							{
+								displayName: 'Name',
+								name: 'name',
+								type: 'string',
+								default: '',
+								placeholder: 'product_side.jpg',
+								description: 'The name of the media file',
+							},
+							{
+								displayName: 'URL',
+								name: 'url',
+								type: 'string',
+								required: true,
+								default: '',
+								placeholder: 'https://example.com/new_image.jpg',
+								description: 'A public URL for the media asset',
+							},
+							{
+								displayName: 'Description',
+								name: 'description',
+								type: 'string',
+								default: '',
+								placeholder: 'A side view of the product.',
+								description: 'A brief description of the media',
+							},
+						],
 					},
 				],
 			},
@@ -126,13 +130,15 @@ export async function executeUpdateProductInformationOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const productId = this.getNodeParameter('productId', i) as string;
-	const name = this.getNodeParameter('name', i, '') as string;
-	const description = this.getNodeParameter('description', i, '') as string;
-	const targetAudience = this.getNodeParameter('targetAudience', i, '') as string;
+	const productId = this.getNodeParameter('product_id', i) as string;
+	const updates = this.getNodeParameter('updates', i, {}) as IDataObject;
+	const name = (updates.name as string) || '';
+	const description = (updates.description as string) || '';
+	const targetAudience = (updates.target_audience as string) || '';
 
-	const mediaCollection = this.getNodeParameter('media.mediaValues', i, []) as IDataObject[];
-	const media = mediaCollection.map((item: IDataObject) => {
+	const mediaCollection = (updates.media as IDataObject) || {};
+	const mediaItems = (mediaCollection.mediaItem as IDataObject[]) || [];
+	const media = mediaItems.map((item: IDataObject) => {
 		return {
 			type: item.type as number,
 			name: item.name as string,
@@ -143,11 +149,12 @@ export async function executeUpdateProductInformationOperation(
 
 	const body: IDataObject = {
 		product_id: productId,
-		name,
-		description,
-		target_audience: targetAudience,
-		media,
 	};
+
+	if (name) body.name = name;
+	if (description) body.description = description;
+	if (targetAudience) body.target_audience = targetAudience;
+	if (media.length > 0) body.media = media;
 
 	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 

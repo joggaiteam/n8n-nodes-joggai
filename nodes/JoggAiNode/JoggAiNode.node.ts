@@ -16,6 +16,7 @@ import { aiScriptActionProperties, executeAiScriptActionOperation } from './AiSc
 import { fileProperties, executeFileOperation } from './File';
 import { musicProperties, executeMusicOperation } from './Music';
 import { visualStyleProperties, executeVisualStyleOperation } from './VisualStyle';
+import { webhookProperties, executeWebhookOperation } from './JoggAiNodeWebhook';
 
 import {
 	CREDENTIALS_API_NAME,
@@ -28,6 +29,7 @@ import {
 	FILE_RESOURCE,
 	MUSIC_RESOURCE,
 	VISUAL_STYLE_RESOURCE,
+	WEBHOOK_RESOURCE,
 } from '../../const/joggAiNode2';
 
 export class JoggAiNode implements INodeType {
@@ -95,6 +97,10 @@ export class JoggAiNode implements INodeType {
 						name: VISUAL_STYLE_RESOURCE.name,
 						value: VISUAL_STYLE_RESOURCE.value,
 					},
+					{
+						name: WEBHOOK_RESOURCE.name,
+						value: WEBHOOK_RESOURCE.value,
+					},
 				],
 				default: VIDEO_RESOURCE.value,
 				required: true,
@@ -108,6 +114,7 @@ export class JoggAiNode implements INodeType {
 			...fileProperties,
 			...musicProperties,
 			...visualStyleProperties,
+			...webhookProperties,
 		],
 	};
 
@@ -155,6 +162,10 @@ export class JoggAiNode implements INodeType {
 					case VISUAL_STYLE_RESOURCE.value:
 						const visualStyleResults = await executeVisualStyleOperation.call(this, i);
 						returnData.push(...visualStyleResults);
+						break;
+					case WEBHOOK_RESOURCE.value:
+						const webhookResults = await executeWebhookOperation.call(this, i);
+						returnData.push(...webhookResults);
 						break;
 				}
 			} catch (error) {

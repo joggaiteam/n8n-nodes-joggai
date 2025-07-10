@@ -18,7 +18,7 @@ export const voiceListProperties: INodeProperties[] = [
 		type: 'options',
 		options: [notSelectOption, ...languageOptions],
 		default: '',
-		description: 'Filter voices by language',
+		description: 'Optional. Filter the list of custom voices by language.',
 		displayOptions: {
 			show: {
 				resource: [VOICE_RESOURCE.value],

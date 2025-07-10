@@ -9,18 +9,19 @@ import { VIDEO_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2
 
 export const getGeneratedVideoProperties: INodeProperties[] = [
 	{
-		displayName: 'Project ID',
-		name: 'projectId',
+		displayName: 'Video ID',
+		name: 'project_id',
 		type: 'string',
+		required: true,
 		default: '',
-		description: 'The ID of the project to retrieve',
+		description: 'The ID of the video to retrieve information for',
+		placeholder: '30062015eb6742acadf68e17af2937d3',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
 				operation: [VIDEO_RESOURCE.operation.GET.value],
 			},
 		},
-		required: true,
 	},
 ];
 
@@ -30,7 +31,7 @@ export async function executeGetGeneratedVideoOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const projectId = this.getNodeParameter('projectId', i) as number;
+	const projectId = this.getNodeParameter('project_id', i) as string;
 
 	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 

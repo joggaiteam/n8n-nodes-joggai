@@ -8,14 +8,12 @@ import {
 
 import { VISUAL_STYLE_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
 
-import { aspectRatioOptions } from '../../../const/aspectRatio';
-
 export const visualStyleListProperties: INodeProperties[] = [
 	{
 		displayName: 'Aspect Ratio',
-		description: 'Screen aspect ratio',
-		name: 'aspectRatio',
+		name: 'aspect_ratio',
 		type: 'options',
+		description: 'Optional. Filter the list of visual styles by aspect ratio.',
 		default: -1,
 		displayOptions: {
 			show: {
@@ -23,7 +21,24 @@ export const visualStyleListProperties: INodeProperties[] = [
 				operation: [VISUAL_STYLE_RESOURCE.operation.GET.value],
 			},
 		},
-		options: aspectRatioOptions,
+		options: [
+			{
+				name: 'All',
+				value: -1,
+			},
+			{
+				name: 'Portrait (9:16)',
+				value: 0,
+			},
+			{
+				name: 'Landscape (16:9)',
+				value: 1,
+			},
+			{
+				name: 'Square (1:1)',
+				value: 2,
+			},
+		],
 	},
 ];
 
@@ -38,7 +53,7 @@ export async function executeVisualStyleListOperation(
 	let endpoint = `/v1/visual_styles`;
 
 	const qs: IDataObject = {};
-	const aspectRatio = this.getNodeParameter('aspectRatio', i) as string;
+	const aspectRatio = this.getNodeParameter('aspect_ratio', i) as string;
 	qs.aspect_ratio = aspectRatio;
 
 	const options: IHttpRequestOptions = {
