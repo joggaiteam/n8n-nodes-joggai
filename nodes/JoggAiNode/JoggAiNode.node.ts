@@ -41,7 +41,7 @@ export class JoggAiNode implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] + ": " + $parameter["resource"] }}',
-		description: 'JoggAI Open API Node',
+		description: 'Interact with the JoggAI API to create and manage AI videos',
 		defaults: {
 			name: 'JoggAI',
 		},
