@@ -1,19 +1,21 @@
 {
 	"name": "n8n-nodes-joggai",
-	"version": "0.1.0",
-	"description": "",
+	"version": "1.0.0",
+	"description": "Interact with the JoggAI API to create and manage AI videos",
 	"keywords": [
-		"n8n-community-node-package"
+		"n8n-community-node-package",
+		"joggai",
+		"jogg"
 	],
 	"license": "MIT",
-	"homepage": "",
+	"homepage": "https://jogg.ai",
 	"author": {
-		"name": "",
-		"email": ""
+		"name": "JoggAI",
+		"email": "support@jogg.ai"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/<...>/n8n-nodes-<...>.git"
+		"url": "https://github.com/joggaiteam/n8n-nodes-joggai"
 	},
 	"engines": {
 		"node": ">=20.15"
