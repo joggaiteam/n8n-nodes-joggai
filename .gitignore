@@ -7,6 +7,7 @@ npm-debug.log*
 yarn.lock
 .vscode/launch.json
 .idea
+.vscode
 .cursorrules
 
 *.tgz
