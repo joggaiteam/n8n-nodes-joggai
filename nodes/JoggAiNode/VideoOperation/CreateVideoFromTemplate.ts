@@ -115,41 +115,42 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 					{
 						displayName: 'Properties',
 						name: 'properties',
-						type: 'fixedCollection',
-						typeOptions: {
-							multipleValues: false,
-						},
+						type: 'collection',
 						required: true,
-						default: {
-							values: {},
+						default: {},
+						displayOptions: {
+							show: {
+								type: ['text', 'script'],
+							},
 						},
 						options: [
 							{
-								name: 'values',
-								displayName: 'Properties Values',
-								values: [
-									{
-										displayName: 'Content',
-										name: 'content',
-										type: 'string',
-										default: '',
-										description: 'The text content for the variable',
-									},
-									{
-										displayName: 'URL',
-										name: 'url',
-										type: 'string',
-										default: '',
-										description: 'The URL for the variable',
-									},
-									{
-										displayName: 'Asset ID',
-										name: 'assetId',
-										type: 'number',
-										default: 0,
-										description: 'The asset ID for the variable',
-									},
-								],
+								displayName: 'Content',
+								name: 'content',
+								type: 'string',
+								default: '',
+								description: 'The text content for the variable',
+							},
+						],
+					},
+					{
+						displayName: 'Properties',
+						name: 'properties',
+						type: 'collection',
+						required: true,
+						default: {},
+						displayOptions: {
+							show: {
+								type: ['image', 'video'],
+							},
+						},
+						options: [
+							{
+								displayName: 'URL',
+								name: 'url',
+								type: 'string',
+								default: '',
+								description: 'The URL for media content',
 							},
 						],
 					},
@@ -185,14 +186,14 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 					{ name: 'Custom Avatar', value: 1 },
 				],
 				default: 0,
-				description: 'Override the template\'s avatar source',
+				description: "Override the template's avatar source",
 			},
 			{
 				displayName: 'Avatar ID',
 				name: 'avatar_id',
 				type: 'number',
 				default: '',
-				description: 'Override the template\'s avatar ID',
+				description: "Override the template's avatar ID",
 			},
 			{
 				displayName: 'Voice ID',
@@ -200,14 +201,14 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 				type: 'string',
 				default: '',
 				placeholder: 'en-US-ChristopherNeural',
-				description: 'Override the template\'s voice ID',
+				description: "Override the template's voice ID",
 			},
 			{
 				displayName: 'Music ID',
 				name: 'music_id',
 				type: 'number',
 				default: '',
-				description: 'Override the template\'s background music ID',
+				description: "Override the template's background music ID",
 			},
 			{
 				displayName: 'Enable Captions',
@@ -284,13 +285,18 @@ export async function executeCreateVideoFromTemplateOperation(
 
 function parseVariables(variablesCollection: IDataObject[]) {
 	return variablesCollection.map((variable: IDataObject) => {
+		const variableType = variable.type as string;
+		const properties = variable.properties as IDataObject;
+
 		return {
-			type: variable.type as string,
+			type: variableType,
 			name: variable.name as string,
 			properties: {
-				content: ((variable.properties as IDataObject)?.content as string) || '',
-				url: ((variable.properties as IDataObject)?.url as string) || '',
-				asset_id: ((variable.properties as IDataObject)?.asset_id as number) || 0,
+				content: variableType === 'text' ? (properties?.content as string) || '' : '',
+				url: ['image', 'video'].includes(variableType) ? (properties?.url as string) || '' : '',
+				asset_id: ['image', 'video'].includes(variableType)
+					? (properties?.asset_id as number) || 0
+					: 0,
 			},
 		};
 	});
