@@ -54,7 +54,6 @@ export class JoggAiNode implements INodeType {
 			},
 		],
 		properties: [
-			// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 			{
 				displayName: 'Resource',
 				name: 'resource',
@@ -102,7 +101,7 @@ export class JoggAiNode implements INodeType {
 						value: WEBHOOK_RESOURCE.value,
 					},
 				],
-				default: VIDEO_RESOURCE.value,
+				default: 'video',
 				required: true,
 			},
 			...videoProperties,

@@ -175,8 +175,14 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 				operation: [VIDEO_RESOURCE.operation.CREATE_FROM_TEMPLATE.value],
 			},
 		},
-		// eslint-disable-next-line n8n-nodes-base/node-param-collection-type-unsorted-items
 		options: [
+			{
+				displayName: 'Avatar ID',
+				name: 'avatar_id',
+				type: 'number',
+				default: '',
+				description: "Override the template's avatar ID",
+			},
 			{
 				displayName: 'Avatar Type',
 				name: 'avatar_type',
@@ -189,19 +195,11 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 				description: "Override the template's avatar source",
 			},
 			{
-				displayName: 'Avatar ID',
-				name: 'avatar_id',
-				type: 'number',
-				default: '',
-				description: "Override the template's avatar ID",
-			},
-			{
-				displayName: 'Voice ID',
-				name: 'voice_id',
-				type: 'string',
-				default: '',
-				placeholder: 'en-US-ChristopherNeural',
-				description: "Override the template's voice ID",
+				displayName: 'Enable Captions',
+				name: 'caption',
+				type: 'boolean',
+				default: true,
+				description: 'Whether to enable captions for the video',
 			},
 			{
 				displayName: 'Music ID',
@@ -211,12 +209,12 @@ export const createVideoFromTemplateProperties: INodeProperties[] = [
 				description: "Override the template's background music ID",
 			},
 			{
-				displayName: 'Enable Captions',
-				name: 'caption',
-				type: 'boolean',
-				default: true,
-				// eslint-disable-next-line n8n-nodes-base/node-param-description-boolean-without-whether
-				description: 'Override the caption setting for the video',
+				displayName: 'Voice ID',
+				name: 'voice_id',
+				type: 'string',
+				default: '',
+				placeholder: 'en-US-ChristopherNeural',
+				description: "Override the template's voice ID",
 			},
 		],
 	},

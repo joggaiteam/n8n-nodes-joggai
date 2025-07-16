@@ -18,7 +18,6 @@ import {
 import { WEBHOOK_RESOURCE } from '../../const/joggAiNode2';
 
 export const webhookProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -61,7 +60,7 @@ export const webhookProperties: INodeProperties[] = [
 				action: WEBHOOK_RESOURCE.operation.EVENTS_WEBHOOK.name,
 			},
 		],
-		default: WEBHOOK_RESOURCE.operation.LIST_WEBHOOK.value,
+		default: 'webhook:list',
 		required: true,
 	},
 	...addWebhookProperties,

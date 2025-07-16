@@ -5,11 +5,11 @@ import { AI_SCRIPT_RESOURCE } from '../../const/joggAiNode2';
 import { aiScriptProperties, executeAiScriptOperation } from './AiScriptOperation/AiScript';
 
 export const aiScriptActionProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
+		default: 'generate',
 		noDataExpression: true,
 		displayOptions: {
 			show: {
@@ -24,7 +24,6 @@ export const aiScriptActionProperties: INodeProperties[] = [
 				action: AI_SCRIPT_RESOURCE.operation.GENERATE.action,
 			},
 		],
-		default: AI_SCRIPT_RESOURCE.operation.GENERATE.value,
 		required: true,
 	},
 	...aiScriptProperties,

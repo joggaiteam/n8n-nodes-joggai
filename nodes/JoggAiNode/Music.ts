@@ -5,7 +5,6 @@ import { MUSIC_RESOURCE } from '../../const/joggAiNode2';
 import { musicListProperties, executeMusicListOperation } from './MusicOperation/GetMusic';
 
 export const musicProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -24,7 +23,7 @@ export const musicProperties: INodeProperties[] = [
 				action: MUSIC_RESOURCE.operation.GET.action,
 			},
 		],
-		default: MUSIC_RESOURCE.operation.GET.value,
+		default: 'get',
 		required: true,
 	},
 	...musicListProperties,

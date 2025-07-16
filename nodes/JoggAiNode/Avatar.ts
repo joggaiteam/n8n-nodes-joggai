@@ -29,7 +29,6 @@ import {
 import { AVATAR_RESOURCE } from '../../const/joggAiNode2';
 
 export const avatarProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -84,7 +83,7 @@ export const avatarProperties: INodeProperties[] = [
 				action: AVATAR_RESOURCE.operation.CHECK_PHOTO_AVATAR_STATUS.name,
 			},
 		],
-		default: AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value,
+		default: 'getLibraryAvatars',
 		required: true,
 	},
 	...getAvatarListFromLibraryProperties,

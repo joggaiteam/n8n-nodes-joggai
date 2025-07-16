@@ -12,7 +12,6 @@ import {
 } from './ProductOperation/UpdateProductInformation';
 
 export const productProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -37,7 +36,7 @@ export const productProperties: INodeProperties[] = [
 				action: PRODUCT_RESOURCE.operation.UPDATE_PRODUCT.action,
 			},
 		],
-		default: PRODUCT_RESOURCE.operation.UPLOAD_PRODUCT.value,
+		default: 'uploadProduct',
 		required: true,
 	},
 	...uploadUrlCreateProductProperties,

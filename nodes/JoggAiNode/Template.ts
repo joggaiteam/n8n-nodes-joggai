@@ -12,7 +12,6 @@ import {
 } from './TemplateOperation/GetMyTemplate';
 
 export const templateProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -37,7 +36,7 @@ export const templateProperties: INodeProperties[] = [
 				action: TEMPLATE_RESOURCE.operation.GET_MY_TEMPLATES.action,
 			},
 		],
-		default: TEMPLATE_RESOURCE.operation.GET_MY_TEMPLATES.value,
+		default: 'getMyTemplates',
 		required: true,
 	},
 	...getLibraryTemplateProperties,

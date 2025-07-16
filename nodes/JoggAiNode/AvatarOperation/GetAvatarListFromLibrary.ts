@@ -29,8 +29,15 @@ export const getAvatarListFromLibraryProperties: INodeProperties[] = [
 				operation: [AVATAR_RESOURCE.operation.GET_LIBRARY_AVATARS.value],
 			},
 		},
-		// eslint-disable-next-line n8n-nodes-base/node-param-collection-type-unsorted-items
 		options: [
+			{
+				displayName: 'Age',
+				name: 'age',
+				type: 'options',
+				options: [notSelectOption, ...avatarAgeOptions],
+				default: '',
+				description: 'Filter by avatar age',
+			},
 			{
 				displayName: 'Aspect Ratio',
 				name: 'aspect_ratio',
@@ -40,12 +47,12 @@ export const getAvatarListFromLibraryProperties: INodeProperties[] = [
 				description: 'Filter by screen aspect ratio',
 			},
 			{
-				displayName: 'Style',
-				name: 'style',
+				displayName: 'Ethnicity',
+				name: 'ethnicity',
 				type: 'options',
-				options: [notSelectOption, ...avatarStyle2Options],
+				options: [notSelectOption, ...ethnicity2Options],
 				default: '',
-				description: 'Filter by avatar style',
+				description: 'Filter by avatar ethnicity',
 			},
 			{
 				displayName: 'Gender',
@@ -56,14 +63,6 @@ export const getAvatarListFromLibraryProperties: INodeProperties[] = [
 				description: 'Filter by avatar gender',
 			},
 			{
-				displayName: 'Age',
-				name: 'age',
-				type: 'options',
-				options: [notSelectOption, ...avatarAgeOptions],
-				default: '',
-				description: 'Filter by avatar age',
-			},
-			{
 				displayName: 'Scene',
 				name: 'scene',
 				type: 'options',
@@ -72,12 +71,12 @@ export const getAvatarListFromLibraryProperties: INodeProperties[] = [
 				description: 'Filter by avatar scene',
 			},
 			{
-				displayName: 'Ethnicity',
-				name: 'ethnicity',
+				displayName: 'Style',
+				name: 'style',
 				type: 'options',
-				options: [notSelectOption, ...ethnicity2Options],
+				options: [notSelectOption, ...avatarStyle2Options],
 				default: '',
-				description: 'Filter by avatar ethnicity',
+				description: 'Filter by avatar style',
 			},
 		],
 	},

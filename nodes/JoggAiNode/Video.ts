@@ -24,7 +24,6 @@ import {
 } from './VideoOperation/GeneratePreviewVideoFromProduct';
 
 export const videoProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -67,7 +66,7 @@ export const videoProperties: INodeProperties[] = [
 				action: VIDEO_RESOURCE.operation.GENERATE_PREVIEW.action,
 			},
 		],
-		default: VIDEO_RESOURCE.operation.GET.value,
+		default: 'get',
 		required: true,
 	},
 	...createTalkingAvatarProperties,

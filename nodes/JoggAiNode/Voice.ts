@@ -9,7 +9,6 @@ import {
 } from './VoiceOperation/GetLibraryVoices';
 
 export const voiceProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -34,7 +33,7 @@ export const voiceProperties: INodeProperties[] = [
 				action: VOICE_RESOURCE.operation.GET_MY_VOICES.action,
 			},
 		],
-		default: VOICE_RESOURCE.operation.GET_LIBRARY_VOICES.value,
+		default: 'getLibraryVoices',
 		required: true,
 	},
 	...voiceListProperties,

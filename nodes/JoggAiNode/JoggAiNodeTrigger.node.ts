@@ -71,8 +71,8 @@ export class JoggAiNodeTrigger implements INodeType {
 			{
 				displayName: 'Webhook Secret',
 				name: 'webhookSecret',
-				// eslint-disable-next-line n8n-nodes-base/node-param-type-options-password-missing
 				type: 'string',
+				typeOptions: { password: true },
 				default: '',
 				displayOptions: {
 					show: {

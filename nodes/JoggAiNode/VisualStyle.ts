@@ -8,7 +8,6 @@ import {
 } from './VisualStyleOperation/GetVisualStyle';
 
 export const visualStyleProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -27,7 +26,7 @@ export const visualStyleProperties: INodeProperties[] = [
 				action: VISUAL_STYLE_RESOURCE.operation.GET.action,
 			},
 		],
-		default: VISUAL_STYLE_RESOURCE.operation.GET.value,
+		default: 'get',
 		required: true,
 	},
 	...visualStyleListProperties,

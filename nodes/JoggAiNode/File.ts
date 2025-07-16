@@ -5,7 +5,6 @@ import { FILE_RESOURCE } from '../../const/joggAiNode2';
 import { uploadMediaProperties, executeUploadMediaOperation } from './FileOperation/UploadMedia';
 
 export const fileProperties: INodeProperties[] = [
-	// eslint-disable-next-line n8n-nodes-base/node-param-default-missing
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -24,7 +23,7 @@ export const fileProperties: INodeProperties[] = [
 				action: FILE_RESOURCE.operation.UPLOAD.action,
 			},
 		],
-		default: FILE_RESOURCE.operation.UPLOAD.value,
+		default: 'upload',
 		required: true,
 	},
 	...uploadMediaProperties,
