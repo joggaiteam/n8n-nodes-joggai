@@ -1,4 +1,4 @@
-# JoggAI Node for n8n
+# n8n-nodes-joggai
 
 Automate the creation of digital human and marketing videos in your n8n workflows via API.
 
@@ -24,14 +24,14 @@ Before using this node, please ensure you have:
 ## 🚀 Quick Start
 
 1.  **Install the Node in n8n:**
-	- Go to `Settings > Community Nodes`.
-	- Click `Install` and search for `n8n-nodes-jogg-ai`.
+    - Go to `Settings > Community Nodes`.
+    - Click `Install` and search for `n8n-nodes-jogg-ai`.
 
 2.  **Configure JoggAI Credentials:**
-	- In the `Credentials` section of n8n, click `Add Credential`.
-	- Search for and select `JoggAI API`.
-	- Go to your [JoggAI API settings page](https://app.jogg.ai/home) to copy your API Key and paste it.
-		![Find your JoggAI API Key](https://res.jogg.ai/upload/sam/2025-07-11/292683374000458e91c7a55c4a3915b5.png)
+    - In the `Credentials` section of n8n, click `Add Credential`.
+    - Search for and select `JoggAI API`.
+    - Go to your [JoggAI API settings page](https://app.jogg.ai/home) to copy your API Key and paste it.
+      ![Find your JoggAI API Key](https://res.jogg.ai/upload/sam/2025-07-11/292683374000458e91c7a55c4a3915b5.png)
 
 ## 💡 Example: Automatically Generate Videos from Google Sheets Content
 
