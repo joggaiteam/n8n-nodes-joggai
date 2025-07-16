@@ -16,8 +16,7 @@ export class JoggAiNodeTrigger implements INodeType {
 		group: ['trigger'],
 		version: 1,
 		description: 'Interact with the JoggAI API to create and manage AI videos',
-		// eslint-disable-next-line n8n-nodes-base/node-class-description-icon-not-svg
-		icon: 'file:joggai.png',
+		icon: 'file:joggai.svg',
 		defaults: {
 			name: 'JoggAI Trigger',
 		},
