@@ -40,6 +40,7 @@ export async function executeCheckMotionStatusOperation(
 		url: `${credentials.domain as string}/v1/photo_avatar`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'x-api-platform': 'n8n',
 		},
 		qs: {
 			motion_id: motionId,

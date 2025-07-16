@@ -206,6 +206,7 @@ export async function executeUploadUrlCreateProductOperation(
 		headers: {
 			'x-api-key': credentials.apiKey as string,
 			'Content-Type': 'application/json',
+			'x-api-platform': 'n8n',
 		},
 		body,
 		json: true,

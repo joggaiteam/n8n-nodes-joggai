@@ -300,6 +300,7 @@ export async function executeGeneratePreviewVideoFromProductOperation(
 		headers: {
 			'x-api-key': credentials.apiKey as string,
 			'Content-Type': 'application/json',
+			'x-api-platform': 'n8n',
 		},
 		body,
 		json: true,

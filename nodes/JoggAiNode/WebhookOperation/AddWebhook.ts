@@ -78,6 +78,7 @@ export async function executeAddWebhookOperation(
 		url: `${credentials.domain as string}/v1/endpoint`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'x-api-platform': 'n8n',
 		},
 		body,
 		json: true,

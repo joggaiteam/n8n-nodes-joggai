@@ -40,6 +40,7 @@ export async function executeGetGeneratedVideoOperation(
 		url: `${credentials.domain as string}/v1/project`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'x-api-platform': 'n8n',
 		},
 		qs: {
 			project_id: projectId,

@@ -22,6 +22,7 @@ export async function executeListWebhookOperation(
 		url: `${credentials.domain as string}/v1/endpoints`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'x-api-platform': 'n8n',
 		},
 		json: true,
 	};

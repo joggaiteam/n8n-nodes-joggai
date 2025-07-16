@@ -23,6 +23,7 @@ export async function executeGetPhotoAvatarListOperation(
 		headers: {
 			'x-api-key': credentials.apiKey as string,
 			'Content-Type': 'application/json',
+			'x-api-platform': 'n8n',
 		},
 		json: true,
 	};

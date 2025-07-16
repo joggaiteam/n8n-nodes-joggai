@@ -40,6 +40,7 @@ export async function executeCheckPhotoStatusOperation(
 		url: `${credentials.domain as string}/v1/photo_avatar/generation`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'x-api-platform': 'n8n',
 		},
 		qs: {
 			photo_id: photoId,

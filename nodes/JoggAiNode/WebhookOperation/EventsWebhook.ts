@@ -22,6 +22,7 @@ export async function executeEventsWebhookOperation(
 		url: `${credentials.domain as string}/v1/events`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'x-api-platform': 'n8n',
 		},
 		json: true,
 	};

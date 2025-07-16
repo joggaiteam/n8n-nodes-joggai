@@ -38,6 +38,7 @@ export async function executeDeleteWebhookOperation(
 		url: `${credentials.domain as string}/v1/endpoint/${endpointId}`,
 		headers: {
 			'x-api-key': credentials.apiKey as string,
+			'x-api-platform': 'n8n',
 		},
 		json: true,
 	};
