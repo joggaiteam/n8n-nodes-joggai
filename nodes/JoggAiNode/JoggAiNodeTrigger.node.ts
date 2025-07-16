@@ -1,9 +1,7 @@
-import crypto from 'crypto';
 import {
 	INodeType,
 	INodeTypeDescription,
 	NodeConnectionType,
-	NodeOperationError,
 } from 'n8n-workflow';
 import { IWebhookFunctions } from 'n8n-workflow/dist/Interfaces';
 
@@ -67,54 +65,11 @@ export class JoggAiNodeTrigger implements INodeType {
 				// type: 'multiOptions',
 				type: 'options',
 			},
-			{
-				displayName: 'Webhook Secret',
-				name: 'webhookSecret',
-				type: 'string',
-				typeOptions: { password: true },
-				default: '',
-				displayOptions: {
-					show: {
-						events: [
-							'generated_video_success',
-							'generated_video_failed',
-							'create_avatar_success',
-							'create_avatar_failed',
-						],
-					},
-				},
-			},
 		],
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<any> {
-		const webhookSecret = this.getNodeParameter('webhookSecret', '') as string;
-		const headerData = this.getHeaderData();
 		const body = this.getBodyData();
-
-		// Get signature
-		let signature = '';
-		const headerKeys = Object.keys(headerData);
-		const signatureHeaderKey = headerKeys.find(
-			(key) => key.toLowerCase() === 'x-webhook-signature',
-		);
-		if (signatureHeaderKey) {
-			signature = headerData[signatureHeaderKey] as string;
-		}
-
-		if (webhookSecret && signature) {
-			this.logger.info('If the secret is set and the signature is not empty, verify the signature');
-			// Calculate signature
-			const mac = crypto.createHmac('sha256', webhookSecret);
-			mac.update(JSON.stringify(body));
-			const calculatedSignature = mac.digest('hex');
-
-			// Compare signature
-			if (calculatedSignature !== signature) {
-				throw new NodeOperationError(this.getNode(), 'JoggAI Webhook signature validation failed');
-			}
-		}
-
 		return {
 			workflowData: [
 				[
