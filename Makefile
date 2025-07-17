@@ -20,3 +20,7 @@ pack:
 clean:
 	@-rm -rf dist
 	@-rm -rf output
+
+.PHONY: pre-check
+pre-check:
+	@npx @n8n/scan-community-package n8n-nodes-joggai

@@ -16,10 +16,11 @@ import { aiScriptActionProperties, executeAiScriptActionOperation } from './AiSc
 import { fileProperties, executeFileOperation } from './File';
 import { musicProperties, executeMusicOperation } from './Music';
 import { visualStyleProperties, executeVisualStyleOperation } from './VisualStyle';
-import { webhookProperties, executeWebhookOperation } from './JoggAiNodeWebhook';
+import { webhookProperties, executeWebhookOperation } from './Webhook';
 
 import {
 	CREDENTIALS_API_NAME,
+	DOCUMENTATION_URL,
 	VIDEO_RESOURCE,
 	AVATAR_RESOURCE,
 	VOICE_RESOURCE,
@@ -46,6 +47,7 @@ export class JoggAiNode implements INodeType {
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
+		documentationUrl: DOCUMENTATION_URL,
 		credentials: [
 			{
 				name: CREDENTIALS_API_NAME,
@@ -124,7 +126,6 @@ export class JoggAiNode implements INodeType {
 			try {
 				const resource = this.getNodeParameter('resource', i) as string;
 				switch (resource) {
-					// TODO
 					case VIDEO_RESOURCE.value:
 						const videoResults = await executeVideoOperation.call(this, i);
 						returnData.push(...videoResults);

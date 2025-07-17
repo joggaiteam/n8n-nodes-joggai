@@ -5,12 +5,12 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-import { CREDENTIALS_API_NAME } from '../const/joggAiNode2';
+import { CREDENTIALS_API_NAME, DOCUMENTATION_URL } from '../const/joggAiNode2';
 
 export class JoggAiCredentialsApi implements ICredentialType {
 	name = CREDENTIALS_API_NAME;
 	displayName = 'JoggAI Credentials API';
-	documentationUrl = 'https://docs.jogg.ai/api-reference/QuickStart/GettingStarted';
+	documentationUrl = DOCUMENTATION_URL;
 
 	properties: INodeProperties[] = [
 		{
