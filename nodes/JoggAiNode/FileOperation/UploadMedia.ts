@@ -56,20 +56,15 @@ export async function executeUploadMediaOperation(
 		throw new Error(`cannot find the binary property: ${binaryPropertyName}`);
 	}
 
-	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
-
 	const body = {
 		filename: filename,
 	};
 
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
+
 	const options: IHttpRequestOptions = {
 		method: 'POST',
 		url: `${credentials.domain as string}/v1/upload/asset`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n',
-		},
 		body,
 		json: true,
 	};
@@ -83,7 +78,11 @@ export async function executeUploadMediaOperation(
 		uploadError: undefined,
 	};
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 	resultData.assetResponse = responseData;
 
 	if (responseData?.code === 0) {
@@ -95,9 +94,6 @@ export async function executeUploadMediaOperation(
 			const uploadOptions: IHttpRequestOptions = {
 				method: 'PUT',
 				url: sign_url,
-				headers: {
-					'Content-Type': 'application/octet-stream',
-				},
 				body: binaryDataBuffer,
 				json: false,
 			};

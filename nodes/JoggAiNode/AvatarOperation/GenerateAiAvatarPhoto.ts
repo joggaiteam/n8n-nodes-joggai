@@ -166,8 +166,6 @@ export async function executeGenerateAiAvatarPhotoOperation(
 		imageUrl?: string;
 	};
 
-	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
-
 	const body = {
 		age,
 		aspect_ratio: aspectRatio,
@@ -180,21 +178,22 @@ export async function executeGenerateAiAvatarPhotoOperation(
 		image_url: optionalDetails.imageUrl || '',
 	};
 
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
+
 	const options: IHttpRequestOptions = {
 		method: 'POST',
 		url: `${credentials.domain as string}/v1/photo_avatar/photo/generate`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n',
-		},
 		body,
 		json: true,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

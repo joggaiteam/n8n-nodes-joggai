@@ -1,5 +1,7 @@
 export const CREDENTIALS_API_NAME = 'joggAiApi';
 
+export const DOMAIN_URL = 'https://api.jogg.ai';
+
 export const DOCUMENTATION_URL = 'https://docs.jogg.ai/api-reference/QuickStart/GettingStarted';
 
 export const VIDEO_RESOURCE = {

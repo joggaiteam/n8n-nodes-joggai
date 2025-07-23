@@ -48,29 +48,26 @@ export async function executeVisualStyleListOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
-
-	let endpoint = `/v1/visual_styles`;
-
 	const qs: IDataObject = {};
 	const aspectRatio = this.getNodeParameter('aspect_ratio', i) as string;
 	qs.aspect_ratio = aspectRatio;
 
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
+
 	const options: IHttpRequestOptions = {
 		method: 'GET',
-		url: `${credentials.domain as string}${endpoint}`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n',
-		},
+		url: `${credentials.domain as string}/v1/visual_styles`,
 		qs: qs,
 		json: true,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

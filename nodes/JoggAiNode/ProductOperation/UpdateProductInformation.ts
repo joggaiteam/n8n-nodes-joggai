@@ -30,7 +30,8 @@ export const updateProductInformationProperties: INodeProperties[] = [
 		type: 'collection',
 		placeholder: 'Add Field to Update',
 		default: {},
-		description: 'Select the product fields you want to update. Any fields added here will overwrite existing data.',
+		description:
+			'Select the product fields you want to update. Any fields added here will overwrite existing data.',
 		displayOptions: {
 			show: {
 				resource: [PRODUCT_RESOURCE.value],
@@ -161,18 +162,17 @@ export async function executeUpdateProductInformationOperation(
 	const options: IHttpRequestOptions = {
 		method: 'PUT',
 		url: `${credentials.domain as string}/v1/product`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n',
-		},
 		body,
 		json: true,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

@@ -5,7 +5,7 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-import { CREDENTIALS_API_NAME, DOCUMENTATION_URL } from '../const/joggAiNode2';
+import { CREDENTIALS_API_NAME, DOCUMENTATION_URL, DOMAIN_URL } from '../const/joggAiNode2';
 
 export class JoggAiCredentialsApi implements ICredentialType {
 	name = CREDENTIALS_API_NAME;
@@ -26,7 +26,7 @@ export class JoggAiCredentialsApi implements ICredentialType {
 			displayName: 'Domain',
 			name: 'domain',
 			type: 'string',
-			default: 'https://api.jogg.ai',
+			default: DOMAIN_URL,
 			required: true,
 		},
 	];
@@ -39,6 +39,7 @@ export class JoggAiCredentialsApi implements ICredentialType {
 		properties: {
 			headers: {
 				'x-api-key': '={{$credentials.apiKey}}',
+				'x-api-platform': 'n8n',
 			},
 		},
 	};

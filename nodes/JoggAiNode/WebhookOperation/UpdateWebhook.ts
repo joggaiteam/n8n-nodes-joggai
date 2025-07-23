@@ -91,17 +91,17 @@ export async function executeUpdateWebhookOperation(
 	const options: IHttpRequestOptions = {
 		method: 'PUT',
 		url: `${credentials.domain as string}/v1/endpoint/${endpointId}`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'x-api-platform': 'n8n',
-		},
 		body,
 		json: true,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

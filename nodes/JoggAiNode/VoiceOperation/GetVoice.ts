@@ -34,8 +34,6 @@ export async function executeVoiceListOperation(
 ): Promise<INodeExecutionData[]> {
 	const returnData: INodeExecutionData[] = [];
 
-	let endpoint = `/v1/voices/custom`;
-
 	const language = this.getNodeParameter('language', i) as string;
 	const qs: IDataObject = {
 		language: language,
@@ -45,19 +43,18 @@ export async function executeVoiceListOperation(
 
 	const options: IHttpRequestOptions = {
 		method: 'GET',
-		url: `${credentials.domain as string}${endpoint}`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n',
-		},
+		url: `${credentials.domain as string}/v1/voices/custom`,
 		json: true,
 		qs: qs,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

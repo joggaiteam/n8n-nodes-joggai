@@ -60,18 +60,17 @@ export async function executeGetMyTemplateOperation(
 	const options: IHttpRequestOptions = {
 		method: 'GET',
 		url: `${credentials.domain as string}${endpoint}`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n'
-		},
 		qs: qs,
 		json: true,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

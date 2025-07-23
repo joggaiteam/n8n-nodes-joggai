@@ -96,7 +96,8 @@ export const createTalkingAvatarProperties: INodeProperties[] = [
 			},
 		],
 		default: 'script',
-		description: 'Choose to provide a text script for the AI to speak, or a direct URL to an audio file',
+		description:
+			'Choose to provide a text script for the AI to speak, or a direct URL to an audio file',
 		displayOptions: {
 			show: {
 				resource: [VIDEO_RESOURCE.value],
@@ -218,18 +219,17 @@ export async function executeCreateTalkingAvatarOperation(
 	const options: IHttpRequestOptions = {
 		method: 'POST',
 		url: `${credentials.domain as string}/v1/create_video_from_talking_avatar`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n',
-		},
 		body,
 		json: true,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

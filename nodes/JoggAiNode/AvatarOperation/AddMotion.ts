@@ -149,8 +149,6 @@ export async function executeAddMotionOperation(
 	const photoId = optionalFields.photoId || '';
 	const welcomeMsg = optionalFields.welcomeMsg || '';
 
-	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
-
 	const body = {
 		description,
 		image_url: imageUrl,
@@ -161,21 +159,22 @@ export async function executeAddMotionOperation(
 		voice_id: voiceId,
 	};
 
+	const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
+
 	const options: IHttpRequestOptions = {
 		method: 'POST',
 		url: `${credentials.domain as string}/v1/photo_avatar/add_motion`,
-		headers: {
-			'x-api-key': credentials.apiKey as string,
-			'Content-Type': 'application/json',
-			'x-api-platform': 'n8n',
-		},
 		body,
 		json: true,
 	};
 
 	this.logger.info('send request: ' + JSON.stringify(options));
 
-	const responseData = await this.helpers.httpRequest(options);
+	const responseData = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		CREDENTIALS_API_NAME,
+		options,
+	);
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),
