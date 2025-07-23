@@ -4,6 +4,7 @@ import {
 	NodeConnectionType,
 	IHookFunctions,
 	IHttpRequestOptions,
+	NodeOperationError,
 } from 'n8n-workflow';
 import { IWebhookFunctions } from 'n8n-workflow/dist/Interfaces';
 
@@ -75,7 +76,14 @@ export class JoggAiNodeTrigger implements INodeType {
 			async create(this: IHookFunctions): Promise<boolean> {
 				const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
 
-				const webhookUrl = this.getNodeWebhookUrl('default');
+				const webhookUrl = this.getNodeWebhookUrl('default') as string;
+				if (webhookUrl.includes('//localhost')) {
+					throw new NodeOperationError(
+						this.getNode(),
+						'The Webhook can not work on "localhost". Please, either setup n8n on a custom domain or start with "--tunnel"!',
+					);
+				}
+
 				const event = this.getNodeParameter('event', 0);
 
 				const options: IHttpRequestOptions = {
