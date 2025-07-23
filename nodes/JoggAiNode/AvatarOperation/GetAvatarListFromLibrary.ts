@@ -116,7 +116,7 @@ export async function executeGetAvatarListFromLibraryOperation(
 		json: true,
 	};
 
-	this.logger.info('send request: ' + JSON.stringify(options));
+	this.logger.debug('send request: ' + JSON.stringify(options));
 
 	const responseData = await this.helpers.httpRequestWithAuthentication.call(
 		this,

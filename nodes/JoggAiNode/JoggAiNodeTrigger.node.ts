@@ -89,7 +89,7 @@ export class JoggAiNodeTrigger implements INodeType {
 					json: true,
 				};
 
-				this.logger.info('send webhook create request: ' + JSON.stringify(options));
+				this.logger.debug('send webhook create request: ' + JSON.stringify(options));
 
 				let responseData;
 				try {
@@ -99,7 +99,7 @@ export class JoggAiNodeTrigger implements INodeType {
 						options,
 					);
 
-					this.logger.info('send webhook create result: ' + JSON.stringify(responseData));
+					this.logger.debug('send webhook create result: ' + JSON.stringify(responseData));
 				} catch (error) {
 					return false;
 				}
@@ -121,7 +121,7 @@ export class JoggAiNodeTrigger implements INodeType {
 						json: true,
 					};
 
-					this.logger.info('send webhook del request: ' + JSON.stringify(options));
+					this.logger.debug('send webhook del request: ' + JSON.stringify(options));
 
 					try {
 						const responseData = await this.helpers.httpRequestWithAuthentication.call(
@@ -130,7 +130,7 @@ export class JoggAiNodeTrigger implements INodeType {
 							options,
 						);
 
-						this.logger.info('send webhook del result: ' + JSON.stringify(responseData));
+						this.logger.debug('send webhook del result: ' + JSON.stringify(responseData));
 					} catch (error) {
 						return false;
 					}

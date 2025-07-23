@@ -5,8 +5,7 @@ restart:
 	@-rm -rf dist
 	@-pnpm run build
 	# Add it when you start n8n, otherwise you won't get the original HTTP request payload.
-	export N8N_PAYLOAD_DIGEST=true
-	npx n8n
+	N8N_PAYLOAD_DIGEST=true N8N_LOG_LEVEL=debug npx n8n
 
 .PHONY: pack
 pack:

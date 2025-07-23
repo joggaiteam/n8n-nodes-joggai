@@ -70,7 +70,7 @@ export async function executeUploadMediaOperation(
 		json: true,
 	};
 
-	this.logger.info('send request: ' + JSON.stringify(options));
+	this.logger.debug('send request: ' + JSON.stringify(options));
 
 	const resultData = {
 		assetResponse: undefined,
@@ -105,7 +105,7 @@ export async function executeUploadMediaOperation(
 			json: false,
 		};
 
-		this.logger.info('upload file...');
+		this.logger.debug('upload file...');
 		const uploadResponse = await this.helpers.httpRequest(uploadOptions);
 		resultData.uploadStatus = 'success';
 		resultData.uploadResponse = uploadResponse;
