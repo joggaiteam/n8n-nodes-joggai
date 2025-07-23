@@ -2,6 +2,8 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	NodeConnectionType,
+	IHookFunctions,
+	IHttpRequestOptions,
 } from 'n8n-workflow';
 import { IWebhookFunctions } from 'n8n-workflow/dist/Interfaces';
 
@@ -37,7 +39,7 @@ export class JoggAiNodeTrigger implements INodeType {
 		properties: [
 			{
 				displayName: 'Trigger On',
-				name: 'events',
+				name: 'event',
 				options: [
 					{
 						name: 'Generated Video Success',
@@ -66,6 +68,82 @@ export class JoggAiNodeTrigger implements INodeType {
 				type: 'options',
 			},
 		],
+	};
+
+	webhookMethods = {
+		default: {
+			async create(this: IHookFunctions): Promise<boolean> {
+				const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
+
+				const webhookUrl = this.getNodeWebhookUrl('default');
+				const event = this.getNodeParameter('event', 0);
+
+				const options: IHttpRequestOptions = {
+					method: 'POST',
+					url: `${credentials.domain}/v1/endpoint`,
+					body: {
+						url: webhookUrl,
+						events: [event],
+						status: 'enabled',
+					},
+					json: true,
+				};
+
+				this.logger.info('send webhook create request: ' + JSON.stringify(options));
+
+				let responseData;
+				try {
+					responseData = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						CREDENTIALS_API_NAME,
+						options,
+					);
+
+					this.logger.info('send webhook create result: ' + JSON.stringify(responseData));
+				} catch (error) {
+					return false;
+				}
+
+				const webhookData = this.getWorkflowStaticData('node');
+				webhookData.webhookId = responseData?.data?.endpoint_id as string;
+
+				return true;
+			},
+
+			async delete(this: IHookFunctions): Promise<boolean> {
+				const webhookData = this.getWorkflowStaticData('node');
+				if (webhookData.webhookId !== undefined) {
+					const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
+
+					const options: IHttpRequestOptions = {
+						method: 'DELETE',
+						url: `${credentials.domain as string}/v1/endpoint/${webhookData.webhookId}`,
+						json: true,
+					};
+
+					this.logger.info('send webhook del request: ' + JSON.stringify(options));
+
+					try {
+						const responseData = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							CREDENTIALS_API_NAME,
+							options,
+						);
+
+						this.logger.info('send webhook del result: ' + JSON.stringify(responseData));
+					} catch (error) {
+						return false;
+					}
+				}
+
+				return true;
+			},
+
+			async checkExists(this: IHookFunctions): Promise<boolean> {
+				const webhookData = this.getWorkflowStaticData('node');
+				return !!webhookData.webhookId;
+			},
+		},
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<any> {
