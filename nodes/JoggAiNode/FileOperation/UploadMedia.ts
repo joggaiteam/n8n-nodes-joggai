@@ -3,6 +3,7 @@ import {
 	IExecuteFunctions,
 	IHttpRequestOptions,
 	INodeExecutionData,
+	NodeOperationError,
 } from 'n8n-workflow';
 
 import { FILE_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
@@ -83,29 +84,33 @@ export async function executeUploadMediaOperation(
 		CREDENTIALS_API_NAME,
 		options,
 	);
+
+	if (responseData.code !== 0) {
+		throw new NodeOperationError(
+			this.getNode(),
+			`${responseData.msg} (code: ${responseData.code})`,
+			{ itemIndex: i },
+		);
+	}
+
 	resultData.assetResponse = responseData;
 
-	if (responseData?.code === 0) {
+	try {
 		const sign_url = responseData?.data?.sign_url;
+		const binaryDataBuffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+		const uploadOptions: IHttpRequestOptions = {
+			method: 'PUT',
+			url: sign_url,
+			body: binaryDataBuffer,
+			json: false,
+		};
 
-		try {
-			const binaryDataBuffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
-
-			const uploadOptions: IHttpRequestOptions = {
-				method: 'PUT',
-				url: sign_url,
-				body: binaryDataBuffer,
-				json: false,
-			};
-
-			this.logger.info('upload file...');
-			const uploadResponse = await this.helpers.httpRequest(uploadOptions);
-			resultData.uploadStatus = 'success';
-			resultData.uploadResponse = uploadResponse;
-		} catch (error) {
-			resultData.uploadStatus = 'error';
-			resultData.uploadError = error.message;
-		}
+		this.logger.info('upload file...');
+		const uploadResponse = await this.helpers.httpRequest(uploadOptions);
+		resultData.uploadStatus = 'success';
+		resultData.uploadResponse = uploadResponse;
+	} catch (error) {
+		throw new NodeOperationError(this.getNode(), `upload file error: ${error}`, { itemIndex: i });
 	}
 
 	const executionData = this.helpers.constructExecutionMetaData(

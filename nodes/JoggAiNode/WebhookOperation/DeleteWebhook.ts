@@ -3,6 +3,7 @@ import {
 	IExecuteFunctions,
 	IHttpRequestOptions,
 	INodeExecutionData,
+	NodeOperationError,
 } from 'n8n-workflow';
 
 import { WEBHOOK_RESOURCE, CREDENTIALS_API_NAME } from '../../../const/joggAiNode2';
@@ -47,6 +48,14 @@ export async function executeDeleteWebhookOperation(
 		CREDENTIALS_API_NAME,
 		options,
 	);
+
+	if (responseData.code !== 0) {
+		throw new NodeOperationError(
+			this.getNode(),
+			`${responseData.msg} (code: ${responseData.code})`,
+			{ itemIndex: i },
+		);
+	}
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),

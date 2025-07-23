@@ -4,6 +4,7 @@ import {
 	IHttpRequestOptions,
 	INodeExecutionData,
 	IDataObject,
+	NodeOperationError,
 } from 'n8n-workflow';
 
 import { languageOptions } from '../../../const/language';
@@ -308,6 +309,14 @@ export async function executeGeneratePreviewVideoFromProductOperation(
 		CREDENTIALS_API_NAME,
 		options,
 	);
+
+	if (responseData.code !== 0) {
+		throw new NodeOperationError(
+			this.getNode(),
+			`${responseData.msg} (code: ${responseData.code})`,
+			{ itemIndex: i },
+		);
+	}
 
 	const executionData = this.helpers.constructExecutionMetaData(
 		this.helpers.returnJsonArray([responseData]),
