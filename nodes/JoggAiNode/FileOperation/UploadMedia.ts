@@ -102,6 +102,9 @@ export async function executeUploadMediaOperation(
 			method: 'PUT',
 			url: sign_url,
 			body: binaryDataBuffer,
+			headers: {
+				'Content-Type': 'application/octet-stream',
+			},
 			json: false,
 		};
 
