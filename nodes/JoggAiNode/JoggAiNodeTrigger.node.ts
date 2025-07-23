@@ -140,8 +140,32 @@ export class JoggAiNodeTrigger implements INodeType {
 			},
 
 			async checkExists(this: IHookFunctions): Promise<boolean> {
-				const webhookData = this.getWorkflowStaticData('node');
-				return !!webhookData.webhookId;
+				const credentials = await this.getCredentials(CREDENTIALS_API_NAME);
+
+				const options: IHttpRequestOptions = {
+					method: 'GET',
+					url: `${credentials.domain}/v1/endpoints`,
+					json: true,
+				};
+
+				this.logger.debug('send webhook list request: ' + JSON.stringify(options));
+
+				const responseData = await this.helpers.httpRequestWithAuthentication.call(
+					this,
+					CREDENTIALS_API_NAME,
+					options,
+				);
+
+				this.logger.debug('send webhook list result: ' + JSON.stringify(responseData));
+
+				if (responseData.code !== 0) {
+					return false;
+				}
+
+				const registeredWebhooks = responseData?.data?.endpoints || [];
+				const webhookUrl = this.getNodeWebhookUrl('default');
+
+				return registeredWebhooks.some((w: any) => w.url === webhookUrl);
 			},
 		},
 	};
