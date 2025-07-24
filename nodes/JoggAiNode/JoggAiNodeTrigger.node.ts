@@ -5,6 +5,7 @@ import {
 	IHookFunctions,
 	IHttpRequestOptions,
 	NodeOperationError,
+	IDataObject,
 } from 'n8n-workflow';
 import { IWebhookFunctions } from 'n8n-workflow/dist/Interfaces';
 
@@ -107,9 +108,16 @@ export class JoggAiNodeTrigger implements INodeType {
 						options,
 					);
 
+					if (responseData.code !== 0) {
+						throw new NodeOperationError(
+							this.getNode(),
+							`${responseData.msg} (code: ${responseData.code})`,
+						);
+					}
+
 					this.logger.debug('send webhook create result: ' + JSON.stringify(responseData));
 				} catch (error) {
-					return false;
+					throw error;
 				}
 
 				const webhookData = this.getWorkflowStaticData('node');
@@ -138,8 +146,16 @@ export class JoggAiNodeTrigger implements INodeType {
 							options,
 						);
 
+						if (responseData.code !== 0) {
+							throw new NodeOperationError(
+								this.getNode(),
+								`${responseData.msg} (code: ${responseData.code})`,
+							);
+						}
+
 						this.logger.debug('send webhook del result: ' + JSON.stringify(responseData));
 					} catch (error) {
+						this.logger.error('Webhook deletion failed:', error);
 						return false;
 					}
 				}
@@ -158,19 +174,29 @@ export class JoggAiNodeTrigger implements INodeType {
 
 				this.logger.debug('send webhook list request: ' + JSON.stringify(options));
 
-				const responseData = await this.helpers.httpRequestWithAuthentication.call(
-					this,
-					CREDENTIALS_API_NAME,
-					options,
-				);
+				let registeredWebhooks;
+				try {
+					const responseData = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						CREDENTIALS_API_NAME,
+						options,
+					);
 
-				this.logger.debug('send webhook list result: ' + JSON.stringify(responseData));
+					this.logger.debug('send webhook list result: ' + JSON.stringify(responseData));
 
-				if (responseData.code !== 0) {
-					return false;
+					if (responseData.code !== 0) {
+						throw new NodeOperationError(
+							this.getNode(),
+							`${responseData.msg} (code: ${responseData.code})`,
+						);
+					}
+
+					registeredWebhooks = responseData?.data?.endpoints || [];
+				} catch (error) {
+					this.logger.error('Webhook check failed:', error);
+					throw error;
 				}
 
-				const registeredWebhooks = responseData?.data?.endpoints || [];
 				const webhookUrl = this.getNodeWebhookUrl('default');
 
 				return registeredWebhooks.some((w: any) => w.url === webhookUrl);
@@ -180,14 +206,17 @@ export class JoggAiNodeTrigger implements INodeType {
 
 	async webhook(this: IWebhookFunctions): Promise<any> {
 		const body = this.getBodyData();
+
+		const returnData: IDataObject[] = [];
+
+		returnData.push({
+			body: body,
+			headers: this.getHeaderData(),
+			query: this.getQueryData(),
+		});
+
 		return {
-			workflowData: [
-				[
-					{
-						json: body,
-					},
-				],
-			],
+			workflowData: [this.helpers.returnJsonArray(returnData)],
 		};
 	}
 }
