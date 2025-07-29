@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-joggai",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Interact with the JoggAI API to create and manage AI videos",
 	"keywords": [
 		"n8n-community-node-package",

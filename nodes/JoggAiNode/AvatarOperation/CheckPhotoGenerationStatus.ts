@@ -56,7 +56,7 @@ export async function executeCheckPhotoStatusOperation(
 	if (responseData.code !== 0) {
 		throw new NodeOperationError(
 			this.getNode(),
-			`${responseData.msg} (code: ${responseData.code})`,
+			`${responseData.msg} (code: ${responseData.code}, rid: ${responseData.rid})`,
 			{ itemIndex: i },
 		);
 	}
